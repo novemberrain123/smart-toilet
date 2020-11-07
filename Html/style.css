@@ -1,0 +1,78 @@
+.display {
+    width: 400px;
+    padding-left: 10px;
+    padding-top: 20px;
+    margin-top: 120px;
+    width: 500px;
+    height: 400px;
+    float: left;
+
+}
+
+.buttons {
+    width: 450px;
+    padding-left:3px;
+    padding-top:120px;
+    float: left;
+    
+
+}
+
+.buttons button {
+    display: block;
+    color: white;
+    padding: 20px 40px;
+    cursor: pointer;
+    width: 50%;
+    margin-left: 70px;
+    margin-top: 62px;
+    text-align: center;
+    
+}
+
+.micro button {
+
+    display: block;
+    border: 1px solid rgb(143, 189, 145);
+    color: white;
+    padding: 20px 40px;
+    cursor: pointer;
+    width: 50%;
+    margin-left: 110px;
+    margin-top: 62px;
+    background-color:rgb(143, 189, 145);
+    text-align: center;
+}
+
+.video button {
+
+        
+    border: 1px solid rgb(67, 100, 172);
+    color: white;
+    padding: 20px 10px;
+    cursor: pointer;
+    width: 30%;
+    margin-left: 60px;
+    margin-top: 10px;
+    background-color: rgb(67, 100, 172);  
+}
+
+.micro button {
+
+    display: block;
+    border: 1px solid rgb(143, 189, 145);
+    color: white;
+    padding: 20px 40px;
+    cursor: pointer;
+    width: 50%;
+    margin-left: 110px;
+    margin-top: 62px;
+    background-color:rgb(143, 189, 145);
+    text-align: center;
+}
+
+.report p 
+{
+    font-weight: bold;
+    font-size: 20px;
+}
