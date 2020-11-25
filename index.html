@@ -4,15 +4,13 @@
 
     <head>
         <title>Graphs</title>
-        <link href="style.css" rel="stylesheet">
+        <link href="Html/style.css" rel="stylesheet">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        
     </head>
 
-<body style="background-image:url('pictures/bckg.png');">
-    <script type="module" src="test.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-database.js"></script>
+<body style="background-image:url('Html/pictures/bckg.png');">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     
     <div>
@@ -26,9 +24,14 @@
     </div>
     <!--div for class buttons-->
 
-    <div class="right" style="font-size: 15px;border: 11px solid rgb(216, 69, 69);width: 574px; height: 300px;margin-left: 30px;">
+    <div class="right" style="font-size: 15px;border: 11px solid rgb(216, 69, 69);width: 700px; height: 400px;margin-left: 30px;">
     <div class="report" style="margin-left: 50px;">
-    <div id="image" style="margin-left: -60.7px;margin-top: -19.5px;"><img src="pictures/stoilet2.png" usemap="#image-map"></div>
+    <div id="image" style="margin-left: -60.7px;margin-top: -19.5px;">
+        <div class="container-fluid w-75 h-50 text-center bg-white" id="user-stats" style="display:none">
+            <canvas id="myChart"></canvas>
+        </div>
+        <img src="Html/pictures/stoilet2.png" usemap="#image-map">
+    </div>
         
       
 
@@ -47,6 +50,12 @@
 </map>
 
 
+   
+    <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-database.js"></script>
+    <script type="module" language="JavaScript" src="Html/test.js"></script>
+    
 </body>
 
 
