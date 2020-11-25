@@ -1,21 +1,9 @@
-<!DOCTYPE html>
-<html>
-<body>
-
-<h2>JavaScript addEventListener()</h2>
-
-<p>This example uses the addEventListener() method to attach a click event to a button.</p>
-
-<button id="myBtn">Try it</button>
-
-<p id="demo"></p>
-
 <script type="module">
-
 import firebase from 'firebase';
-document.getElementById("myBtn").addEventListener("click", display1);
 
-function display1(){
+    document.getElementById("myBtn").addEventListener("click", display1);
+    
+    function display1(){
         // Initialize Firebase
         var config = {
         apiKey: "AIzaSyAH0JTJqYZaKiO-GssnbO9lIW_Z9-HMu0c",
@@ -40,7 +28,15 @@ function display1(){
           });
          });
         };
-</script>
 
-</body>
-</html> 
+    
+document.getElementById("myBtn").addEventListener("click", displayDate);
+
+function display1() {
+    document.write("dasd");
+}
+
+    </script>
+<button id="myBtn">Try it</button>
+
+
