@@ -1,5 +1,7 @@
+import firebase from 'firebase';
+
 var config = {
-    apiKey: "AIzaSyAH0JTJqYZaKiO-GssnbO9lIW_Z9-HMu0c",
+      apiKey: "AIzaSyAH0JTJqYZaKiO-GssnbO9lIW_Z9-HMu0c",
       authDomain: "smart-toilet-adc07.firebaseapp.com",
       databaseURL: "https://smart-toilet-adc07.firebaseio.com",
       projectId: "smart-toilet-adc07",
@@ -17,7 +19,7 @@ $(document).ready(function () {
     var compareVal ='';
     var chartCount ;
     var currentFnD='';
-    var ref = firebase.database().ref().orderByChild("foodAndDrinks");
+    var ref = firebase.database().ref().orderByChild("users");
 
     // Get data function reads the firebase database. Order the data by Child of key foodAndDrinks
     // It then traverses each value in the firebase and 
@@ -150,4 +152,5 @@ $(document).on("click", "#stats", function () {
     $("#image").hide();
     // display the charts
     $("#user-stats").attr("style", "display:block");
+    document.write("DSDSDs");
   });

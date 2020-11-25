@@ -1,0 +1,52 @@
+
+<html>
+<body>
+
+  <button id="read">GET</button>
+  <input id="box" type="text"></input>
+
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-database.js"></script>
+
+
+
+<script>
+    
+  var firebaseConfig = {
+      apiKey: "AIzaSyAH0JTJqYZaKiO-GssnbO9lIW_Z9-HMu0c",
+      authDomain: "smart-toilet-adc07.firebaseapp.com",
+      databaseURL: "https://smart-toilet-adc07.firebaseio.com",
+      projectId: "smart-toilet-adc07",
+      storageBucket: "smart-toilet-adc07.appspot.com",
+      messagingSenderId: "957295405488",
+      appId: "1:957295405488:web:e1ef9592e182de5c670e75",
+      measurementId: "G-H534KJ3HY5"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    
+    var data;
+    function Ready()
+    {
+      data = document.getElementById('box').value;
+    }
+    document.getElementById("read").onclick = function()
+    {
+        Ready();
+        firebase.database().ref('users/00/0000').on('value',function(snapshot){
+            document.getElementById('box').value= snapshot.val().a;
+          
+        });
+    }
+
+
+
+  </script>
+
+
+
+</body>
+</html> 
