@@ -1,0 +1,1 @@
+document.getElementById("myRange").value = "75";

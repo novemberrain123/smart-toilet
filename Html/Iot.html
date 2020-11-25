@@ -3,7 +3,7 @@
 <html>
 
 <head>
-    <title>Microphone</title>
+    <title>Home</title>
     <link href="style.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -12,32 +12,34 @@
 <body style="background-image:url('bckg.png');">
 
     <div>
-    <p style="font-size: 41px;margin-left: 570px;color: red;">Smart-Toilet System</p>
+        <p style="font-size: 41px;margin-left: 570px;color:red;">Smart-Toilet System</p>
     </div>
-    <div>
-    
-    <div class="buttons" style="margin-left: 120px;">
-        
-        <a href="Microphone.html" style="text-decoration: none;"><button style=" background-color: rgb(143, 189, 145);border: 1px solid rgb(143, 189, 145);">MICROPHONE</button></a>
-        <a href="Camera.html" style="text-decoration: none;"><button style="border: 1px solid rgb(67, 100, 172);background-color: rgb(67, 100, 172);">CAMERA</button></a>
-        <a href="Report.html" style="text-decoration: none;"><button style="border: 1px solid rgb(202, 151, 41); background-color: rgb(202, 151, 41);">REPORT</button></a>
-    </div>
-    <!--div for class buttons-->
 
-    <div class="display" style="font-size: 15px;border: 11px solid rgb(216, 69, 69);">
-        <div class="micro">
-            <button>Start Recording</button>
-            <button>Stop Recording</button>
+    <div class="left1" style="margin-left: 180px;">
+        <div style="margin-left: 90px;">
+            <img src="ppl.png" alt="People approaching" width="300" height="400">
         </div>
-
+            <div style="margin-top: 20px;margin-left:30px;">
+               <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+            </div>
     </div>
-    <!--div for class display-->
 
-</div>
-
-
+    <div class="right">
+        <div style="margin-left: -60px;margin-top: -80px;">
+            <img src="toiletbowl.png" alt="Smart Toilet" width="780" height="580">
+        </div>
+    </div>
+  
+    <script>
+          var value = document.getElementsByClassName("myRange");
+          if (value=100)
+          {
+            window.location.href("Microphone.html");
+           }
+    
+        </script>
+    
 </body>
-
 
 
 
