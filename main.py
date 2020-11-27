@@ -189,9 +189,13 @@ while True:
             if (time() > timeout):
                 break
         db2.child("PI_03_CONTROL").update({"ledlgt": "0"})
-        
+        #TODO
         #display time actually spent pooing or urinating
-
+        #transfer images from CR to O 
+        #detect user leaving & present report afterwards
+        #detect poo/urine type based on pi image
+        #give recommendations to user based on that
+        #integrate python with javascript & deploy
         break
     except KeyboardInterrupt:
         exit
