@@ -35,22 +35,51 @@ var xVal = 0;
 var yVal = 0;
 var updateInterval = 1000;
 var dataLength = 20; // number of dataPoints visible at any point
+var counter=0;
+var path ="0000"
+var nextPath=0;
+
 
 var updateChart = function (count) {
-
-	var position ="0000"
+	
+	
+	
 	count = count || 1;
 
 	for (var j = 0; j < count; j++) {
-		firebase.database().ref('users/00/'+position).on('value',function(snapshot){
+		
+
+		firebase.database().ref('users/00/'+path).on('value',function(snapshot){
           yVal = snapshot.val().a;
           
-        });
+		});
+		
 		dps.push({
+
 			x: xVal,
 			y: yVal
 		});
-		xVal+=10;
+
+		xVal+=1;
+		counter+=1;
+		if(counter==30)
+		{
+			nextPath+=10;
+
+			if(nextPath>=1000)
+			{
+				path=nexPath.toString();
+			}
+			else if(nextPath>=100)
+			{
+				path="0"+nextPath.toString();
+			}
+			else
+			{
+				path="00"+nextPath.toString();
+			}	
+
+		}
 	}
 
 	if (dps.length > dataLength) {
