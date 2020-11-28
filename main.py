@@ -5,7 +5,29 @@ import urllib.request, json
 import random
 import speech_recognition as sr
 import pyttsx3
-import pyaudio
+from pathlib import Path
+
+def setConfig(x):
+    if (x==0):
+        config2 = {
+            "apiKey": "AIzaSyAs_1NVtsjZ-LmTATAp0a0R5fK6XdKHaMU",
+            "authDomain": "bait2123-202010-03.firebaseapp.com",
+            "databaseURL": "https://bait2123-202010-03.firebaseio.com/",
+            "storageBucket": "bait2123-202010-03.appspot.com"
+        }
+        return config2
+
+    else:
+        config2 = {
+            "apiKey": "AIzaSyAs_1NVtsjZ-LmTATAp0a0R5fK6XdKHaMU",
+            "authDomain": "bait2123-202010-03.firebaseapp.com",
+            "databaseURL": "https://bait2123-202010-03.firebaseio.com/",
+            "storageBucket": "bait2123-202010-03.appspot.com",
+            "serviceAccount": ".vscode/bait2123-202010-03-firebase-adminsdk-xmqwi-1caf6b0286.json"
+        }
+        return config2
+
+
 config1 = {
     "apiKey": "AIzaSyAH0JTJqYZaKiO-GssnbO9lIW_Z9-HMu0c",
     "authDomain": "smart-toilet-adc07.firebaseapp.com",
@@ -15,21 +37,14 @@ config1 = {
 
 firebase1 = pyrebase.initialize_app(config1)
 auth1 = firebase1.auth()
-user1 = auth1.sign_in_with_email_and_password("pleaseworkusob@gmail.com",
-                                              "Aa123456")
+user1 = auth1.sign_in_with_email_and_password("pleaseworkusob@gmail.com", "Aa123456")
 db1 = firebase1.database()
 storage1 = firebase1.storage()
-config2 = {
-    "apiKey": "AIzaSyAs_1NVtsjZ-LmTATAp0a0R5fK6XdKHaMU",
-    "authDomain": "bait2123-202010-03.firebaseapp.com",
-    "databaseURL": "https://bait2123-202010-03.firebaseio.com/",
-    "storageBucket": "bait2123-202010-03.appspot.com"
-}
 
-firebase2 = pyrebase.initialize_app(config2)
+
+firebase2 = pyrebase.initialize_app(setConfig(0))
 auth2 = firebase2.auth()
-user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com",
-                                              "BeyondEducationH03")
+user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com", "BeyondEducationH03")
 db2 = firebase2.database()
 storage2 = firebase2.storage()
 
@@ -40,11 +55,33 @@ flush_v = ["flush", "flash", "lush", "slush", "flourish"]
 
 
 def takePic():
+    firebase2 = pyrebase.initialize_app(setConfig(1))
+    auth2 = firebase2.auth()
+    user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com", "BeyondEducationH03")
+    db2 = firebase2.database()
+    storage2 = firebase2.storage()
+
     db2.child("PI_03_CONTROL").update({"camera": str(1)})
     print(str(datetime.now()))
     sleep(10)
     print(str(datetime.now()))
     db2.child("PI_03_CONTROL").update({"camera": str(0)})
+    all_files = storage2.child("PI_03_CONTROL").list_files()
+    for file in all_files:            
+        try:
+            if (file.name != "images/oled.jpg"):
+                lastPic = file.name
+        except:    
+            print('File not found')   
+
+    firebase2 = pyrebase.initialize_app(setConfig(0))
+    auth2 = firebase2.auth()
+    user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com", "BeyondEducationH03")
+    db2 = firebase2.database()
+    storage2 = firebase2.storage()
+
+    storage2.child(lastPic).download("C:" ,"lastPic.jpg", user2['idToken'])
+    storage1.child("image").put("C:/Users/lengz/smart-toilet/lastPic.jpg")
 
 
 def getLatestSubfolder():
@@ -130,10 +167,9 @@ while True:
                 break
             sleep(9)
 
-        #takePic()
+        takePic()
 
         check = True
-        beginTime = perf_counter()
         while check:
             if (updUltsensor("ultra2") <= 20):
                 beginTime = perf_counter()
@@ -142,7 +178,7 @@ while True:
                         secondTime = perf_counter()
                         while check:
                             if (updUltsensor("ultra2") > 20):
-                                if ((perf_counter() - secondTime) > 20):
+                                if ((perf_counter() - secondTime) > 15):
                                     check = False
                             else:
                                 break
@@ -151,16 +187,19 @@ while True:
         db1.child("main").child(c).update({"time": str(overallTime)})
 
         #random image is chosen and displayed
+        cwd = str(Path.cwd())
+        cwd = '/'.join(cwd.split('\\'))
+        print(cwd)
         bin = [
             "pee_clear", "pee_yellow", "pee_pink", "poo_black", "poo_brown",
             "poo_yellow"
         ]
-        randS = "E:\Code\smart-toilet\img\\" + random.choice(bin) + ".png"
-        storage2.child("image/oled.jpg").put(randS)
+        randS = cwd + "/img/poo_black.png"
+        storage2.child("images/oled.jpg").put(randS)
         db2.child("PI_03_CONTROL").update({"oledsc": "1"})
-
-        #picture taken
-        takePic()
+        sleep(10)
+        takePic() #picture taken
+        db2.child("PI_03_CONTROL").update({"oledsc": "0"})
 
         spokenCommand, isDefault = speechToText()
 

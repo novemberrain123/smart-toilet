@@ -1,6 +1,9 @@
+from main import takePic
 from time import *
 from pyrebase import pyrebase
 from datetime import *
+import random
+from pathlib import Path
     
 config1 = {
     "apiKey": "AIzaSyAH0JTJqYZaKiO-GssnbO9lIW_Z9-HMu0c",
@@ -29,28 +32,22 @@ user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com", "Beyo
 db2 = firebase2.database()
 storage2 = firebase2.storage()
 
-def takePic():
-    # db2.child("PI_03_CONTROL").update({"camera":str(1)})
-    # print(str(datetime.now()))
-    # sleep(10)
-    # print(str(datetime.now()))
-    # db2.child("PI_03_CONTROL").update({"camera":str(0)})
-    all_files = storage2.child("PI_03_CONTROL").list_files()
-    for file in all_files:            
-        try:
-            if (file.name != "images/oled.jpg"):
-                lastPic = file.name
-                print(file.name)
-                print(type(lastPic))
-        except:    
-            print('File not found')   
-    storage2.child(lastPic).download("C:" ,"lastPic.jpg", user2['idToken'])
-    # randS = "E:\Code\smart-toilet\img\\" + random.choice(bin) + ".png"
-    # storage1.child("image/oled.jpg").put(randS)
-
 while True:
     try:
-        storage2.child("PI_03_CONTROL/cam_20201127224150.jpg").download(r"C:\Users\lengz\smart-toilet\img" ,"lastPic.jpg", user2['idToken'])
+        #random image is chosen and displayed
+        cwd = str(Path.cwd())
+        cwd = '/'.join(cwd.split('\\'))
+        print(cwd)
+        bin = [
+            "pee_clear", "pee_yellow", "pee_pink", "poo_black", "poo_brown",
+            "poo_yellow"
+        ]
+        randS = cwd + "/img/poo_black.png"
+        storage2.child("images/oled.jpg").put(randS)
+        db2.child("PI_03_CONTROL").update({"oledsc": "1"})
+        sleep(10)
+        takePic()
+        db2.child("PI_03_CONTROL").update({"oledsc": "0"})
         break
     except KeyboardInterrupt: 
         exit
