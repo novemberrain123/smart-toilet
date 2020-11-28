@@ -30,22 +30,27 @@ db2 = firebase2.database()
 storage2 = firebase2.storage()
 
 def takePic():
-    db2.child("PI_03_CONTROL").update({"camera":str(1)})
-    print(str(datetime.now()))
-    sleep(10)
-    print(str(datetime.now()))
-    db2.child("PI_03_CONTROL").update({"camera":str(0)})
+    # db2.child("PI_03_CONTROL").update({"camera":str(1)})
+    # print(str(datetime.now()))
+    # sleep(10)
+    # print(str(datetime.now()))
+    # db2.child("PI_03_CONTROL").update({"camera":str(0)})
+    all_files = storage2.child("PI_03_CONTROL").list_files()
+    for file in all_files:            
+        try:
+            if (file.name != "images/oled.jpg"):
+                lastPic = file.name
+                print(file.name)
+                print(type(lastPic))
+        except:    
+            print('File not found')   
+    storage2.child(lastPic).download("C:" ,"lastPic.jpg", user2['idToken'])
+    # randS = "E:\Code\smart-toilet\img\\" + random.choice(bin) + ".png"
+    # storage1.child("image/oled.jpg").put(randS)
 
 while True:
     try:
-        all_files = storage2.child("PI_03_CONTROL").list_files()
-        for file in all_files:            
-            try:
-                print(file.name)
-                print(storage2.child(file.name).get_url())
-                break
-            except:    
-                print('Download Failed')   
+        storage2.child("PI_03_CONTROL/cam_20201127224150.jpg").download(r"C:\Users\lengz\smart-toilet\img" ,"lastPic.jpg", user2['idToken'])
         break
     except KeyboardInterrupt: 
         exit
