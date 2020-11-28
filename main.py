@@ -80,7 +80,7 @@ def takePic():
     db2 = firebase2.database()
     storage2 = firebase2.storage()
 
-    storage2.child(lastPic).download("C:" ,"lastPic.jpg", user2['idToken'])
+    storage2.child(lastPic).download("C:", "lastPic.jpg", user2['idToken'])
     storage1.child("image").put("C:/Users/lengz/smart-toilet/lastPic.jpg")
 
 
@@ -113,7 +113,7 @@ def updSensor(input, output):
     y, hour, date = getLatestSubfolder()
     for keyValue in y:
         x = str(keyValue.key())
-        results = db2.child("PI_03_" + date).child(hour).child(x).child(
+        results = db2.child("PI_03_" + date).child(hour).child(x).child( #ledlgt is in PI_03_CONTROL
             input).get().val()
         db1.child("main").child(c).update({output: str(results)})
 
@@ -228,9 +228,21 @@ while True:
             if (time() > timeout):
                 break
         db2.child("PI_03_CONTROL").update({"ledlgt": "0"})
-        #TODO
+
         #display time actually spent pooing or urinating
-        #transfer images from CR to O 
+        peepooTime = str(int(secondTime - beginTime)) # To remove decimal points
+        lcdColor = {
+            "lcdbkR": str(0),
+            "lcdbkG": str(5),
+            "lcdbkB": str(0),
+        }
+        db2.child("PI_03_CONTROL").update(lcdColor)
+        if (len(peepooTime) == 2): # Used 10 to 99 seconds
+            db2.child("PI_03_CONTROL").update({"lcdtxt": "Time spent = " + peepooTime + "s"})
+        else: # Used 100 to 999 seconds
+            db2.child("PI_03_CONTROL").update({"lcdtxt": "Time spent= " + peepooTime + "s"})
+
+        #TODO
         #detect user leaving & present report afterwards
         #detect poo/urine type based on pi image
         #give recommendations to user based on that
