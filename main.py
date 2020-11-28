@@ -242,8 +242,17 @@ while True:
         else: # Used 100 to 999 seconds
             db2.child("PI_03_CONTROL").update({"lcdtxt": "Time spent= " + peepooTime + "s"})
 
-        #TODO
+        data = {
+            "relay1": str(0),
+            "relay2": str(0),
+        }
         #detect user leaving & present report afterwards
+        while True:
+            if (updUltsensor("ultra1")>200):
+                db2.child("PI_03_CONTROL").update(data)
+                break
+
+        #TODO
         #detect poo/urine type based on pi image
         #give recommendations to user based on that
         #integrate python with javascript & deploy
