@@ -5,6 +5,7 @@ import urllib.request, json
 import random
 import speech_recognition as sr
 import pyttsx3
+import pyaudio
 from pathlib import Path
 
 def setConfig(x):
@@ -49,7 +50,7 @@ db2 = firebase2.database()
 storage2 = firebase2.storage()
 
 c = 0  #subfolder initialization
-r = sr.Recognizer()
+
 wash_v = ["wash", "war", "lasts", "watch"]  #list of words meant to mean wash
 flush_v = ["flush", "flash", "lush", "slush", "flourish"]
 
@@ -113,19 +114,20 @@ def updSensor(input, output):
     y, hour, date = getLatestSubfolder()
     for keyValue in y:
         x = str(keyValue.key())
-        results = db2.child("PI_03_" + date).child(hour).child(x).child( #ledlgt is in PI_03_CONTROL
-            input).get().val()
+        results = db2.child("PI_03_" + date).child(hour).child(x).child(input).get().val()
         db1.child("main").child(c).update({output: str(results)})
 
 
 def speechToText():
 
-    timeout = time() + 60
+    timeout = (datetime.now() + timedelta(seconds=60)).time()
+    timeout = datetime.combine(date.today(), timeout)
     #if user doesnt give a correct command in 60s, toilet will flush automatically
     while True:
         try:
             with sr.Microphone() as source2:
 
+                r = sr.Recognizer()
                 r.adjust_for_ambient_noise(source2, duration=0.2)
 
                 #listens for the user's input
@@ -134,7 +136,7 @@ def speechToText():
                 MyText = r.recognize_google(audio2)
                 MyText = MyText.lower()
                 print(MyText)
-                if (MyText.split()[0] in (wash_v or flush_v)):
+                if MyText.split()[0] in (wash_v + flush_v) and len(MyText.split()) in [1,4]:
                     if (len(MyText.split()) == 1):
                         return MyText, True  #whether is default flush/wash time or not
                     else:
@@ -149,7 +151,7 @@ def speechToText():
             print("Please repeat")
 
         finally:
-            if (time() > timeout):
+            if (datetime.now() > timeout):
                 return "flush", True
 
 
@@ -209,10 +211,11 @@ while True:
                 washTime = int(
                     spokenCommand.split(' ')[2]) if not isDefault else 20
                 db2.child("PI_03_CONTROL").update({"buzzer": "1"})
-                timeout = time() + washTime  #loop time = washTime
+                timeout = (datetime.now() + timedelta(seconds=washTime)).time()  #loop time = washTime
+                timeout = datetime.combine(date.today(), timeout)
                 while True:
                     updSensor("sound", "sound/wash")
-                    if (time() > timeout):
+                    if (datetime.now() > timeout):
                         break
                 db2.child("PI_03_CONTROL").update({"buzzer": "0"})
                 spokenCommand, isDefault = speechToText()
@@ -222,10 +225,11 @@ while True:
         #flushing
         flushTime = int(spokenCommand.split(' ')[2]) if not isDefault else 15
         db2.child("PI_03_CONTROL").update({"ledlgt": "1"})
-        timeout = time() + flushTime
+        timeout = (datetime.now() + timedelta(seconds=flushTime)).time()
+        timeout = datetime.combine(date.today(), timeout)
         while True:
-            updSensor("ledlgt", "led/flush")
-            if (time() > timeout):
+            updSensor("light", "led/flush")
+            if (datetime.now() > timeout):
                 break
         db2.child("PI_03_CONTROL").update({"ledlgt": "0"})
 
@@ -246,6 +250,7 @@ while True:
             "relay1": str(0),
             "relay2": str(0),
         }
+
         #detect user leaving & present report afterwards
         while True:
             if (updUltsensor("ultra1")>200):
