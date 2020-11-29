@@ -246,6 +246,7 @@ while True:
             db2.child("PI_03_CONTROL").update({"lcdtxt": "Time spent = " + peepooTime + "s"})
         else: # Used 100 to 999 seconds
             db2.child("PI_03_CONTROL").update({"lcdtxt": "Time spent= " + peepooTime + "s"})
+        sleep(2)
         takePic("lcdTime", "lt") # Take picture of time spent for pee or poo on lcd
 
         data = {
