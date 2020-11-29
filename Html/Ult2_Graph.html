@@ -1,7 +1,6 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<script src="test1.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-database.js"></script>
@@ -35,24 +34,52 @@ var xVal = 0;
 var yVal = 0;
 var updateInterval = 1000;
 var dataLength = 20; // number of dataPoints visible at any point
-var counter=0;
-var path ="0000"
-var nextPath=0;
+var path;
+var nextPath;
+var key;
 
 
 var updateChart = function (count) {
-	
 	
 	
 	count = count || 1;
 
 	for (var j = 0; j < count; j++) {
 		
-
-		firebase.database().ref('users/00/'+path).on('value',function(snapshot){
-          yVal = snapshot.val().a;
+	
+    var query = firebase.database().ref("users/00").orderByKey();
+    query.once("value").then(function(snapshot) {
+		for (var x in snapshot.val())
+			{
+				key = x;
+			}
+		path = parseInt(key);
+		
+		if(path>=1000)
+		{
+			nextPath=toString(path);
+		}
+		else if(path>=100)
+		{
+			nextPath="0"+path.toString();
+		}
+		else if(path>=10)
+		{
+			nextPath="00"+path.toString();
+		}
+		else
+		{
+			nextPath="000"+path.toString();
+		}
+		
+		firebase.database().ref('users/00/'+nextPath).on('value',function(valSnapshot){
+            yVal= valSnapshot.val().a;
           
-		});
+        });
+			
+  });
+	
+
 		
 		dps.push({
 
@@ -61,26 +88,8 @@ var updateChart = function (count) {
 		});
 
 		xVal+=1;
-		counter+=1;
-		if(counter==30)
-		{
-			counter=20;
-			nextPath+=10;
-
-			if(nextPath>=1000)
-			{
-				path=nexPath.toString();
-			}
-			else if(nextPath>=100)
-			{
-				path="0"+nextPath.toString();
-			}
-			else
-			{
-				path="00"+nextPath.toString();
-			}	
-
-		}
+		
+		
 	}
 
 	if (dps.length > dataLength) {
