@@ -81,8 +81,11 @@ def takePic(folder, fileType):
     db2 = firebase2.database()
     storage2 = firebase2.storage()
 
-    picPath = folder + "/" + fileType + "_" + strftime("%Y%m%d%H%M%S", localtime()) + ".jpg"
     storage2.child(lastPic).download("C:", "lastPic.jpg", user2['idToken'])
+    if (folder == "wastage"):
+        storage2.child(lastPic).download("C:", "wastage.jpg", user2['idToken']) #For detecting pee or poo type later
+
+    picPath = folder + "/" + fileType + "_" + strftime("%Y%m%d%H%M%S", localtime()) + ".jpg"
     storage1.child(picPath).put("C:/Users/lengz/smart-toilet/lastPic.jpg")
 
 
@@ -204,6 +207,8 @@ while True:
         takePic("wastage", "wt") # wastage picture taken
         db2.child("PI_03_CONTROL").update({"oledsc": "0"})
 
+        storage2.child(lastPic).download("C:", "lastPic.jpg", user2['idToken'])
+
         spokenCommand, isDefault = speechToText()
 
         #if wash is spoken, will wash (allowed multiple times), then flush
@@ -264,6 +269,9 @@ while True:
 
         #TODO
         #detect poo/urine type based on pi image
+
+        db1.child("main").child(c).update({"wastageType": str(wastageType)})
+
         #give recommendations to user based on that
         #integrate python with javascript & deploy
         break

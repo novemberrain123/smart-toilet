@@ -81,20 +81,20 @@ def takePic(folder, fileType):
     storage2.child(lastPic).download("C:", "lastPic.jpg", user2['idToken'])
     storage1.child(picPath).put("C:/Users/lengz/smart-toilet/lastPic.jpg")
 
-#random image is chosen and displayed
-while True:
-    cwd = str(Path.cwd())
-    cwd = '/'.join(cwd.split('\\'))
-    print(cwd)
-    bin = [
-        "pee_clear", "pee_yellow", "pee_pink", "poo_black", "poo_brown",
-        "poo_yellow"
-    ]
-    for x in bin:
-        randS = cwd + "/img/" + x + ".png"
-        storage2.child("images/oled.jpg").put(randS)
-        db2.child("PI_03_CONTROL").update({"oledsc": "1"})
-        sleep(10)
-        takePic("wastage", "wt") # wastage picture taken
-        db2.child("PI_03_CONTROL").update({"oledsc": "0"})
-    break
+secondTime = 300
+beginTime = 50
+
+#display time actually spent pooing or urinating
+peepooTime = str(int(secondTime - beginTime)) # To remove decimal points
+lcdColor = {
+    "lcdbkR": str(0),
+    "lcdbkG": str(5),
+    "lcdbkB": str(0),
+}
+db2.child("PI_03_CONTROL").update(lcdColor)
+if (len(peepooTime) == 2): # Used 10 to 99 seconds
+    db2.child("PI_03_CONTROL").update({"lcdtxt": "Time spent = " + peepooTime + "s"})
+else: # Used 100 to 999 seconds
+    db2.child("PI_03_CONTROL").update({"lcdtxt": "Time spent= " + peepooTime + "s"})
+sleep(2)
+takePic("lcdTime", "lt") # Take picture of time spent for pee or poo on lcd

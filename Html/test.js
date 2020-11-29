@@ -19,5 +19,3 @@ var config = {
       measurementId: "G-H534KJ3HY5"
 };
 firebase.initializeApp(config);
- 
-
