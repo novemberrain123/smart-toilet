@@ -55,7 +55,7 @@ wash_v = ["wash", "war", "lasts", "watch"]  #list of words meant to mean wash
 flush_v = ["flush", "flash", "lush", "slush", "flourish"]
 
 
-def takePic():
+def takePic(folder, fileType):
     firebase2 = pyrebase.initialize_app(setConfig(1))
     auth2 = firebase2.auth()
     user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com", "BeyondEducationH03")
@@ -81,8 +81,9 @@ def takePic():
     db2 = firebase2.database()
     storage2 = firebase2.storage()
 
+    picPath = folder + "/" + fileType + "_" + strftime("%Y%m%d%H%M%S", localtime()) + ".jpg"
     storage2.child(lastPic).download("C:", "lastPic.jpg", user2['idToken'])
-    storage1.child("image").put("C:/Users/lengz/smart-toilet/lastPic.jpg")
+    storage1.child(picPath).put("C:/Users/lengz/smart-toilet/lastPic.jpg")
 
 
 def getLatestSubfolder():
@@ -169,7 +170,7 @@ while True:
                 break
             sleep(9)
 
-        takePic()
+        takePic("userIn", "ui") # Take pictures of relays on
 
         check = True
         while check:
@@ -196,11 +197,11 @@ while True:
             "pee_clear", "pee_yellow", "pee_pink", "poo_black", "poo_brown",
             "poo_yellow"
         ]
-        randS = cwd + "/img/poo_black.png"
+        randS = cwd + "/img/" + random.choice(bin) + ".png"
         storage2.child("images/oled.jpg").put(randS)
         db2.child("PI_03_CONTROL").update({"oledsc": "1"})
         sleep(10)
-        takePic() #picture taken
+        takePic("wastage", "wt") # wastage picture taken
         db2.child("PI_03_CONTROL").update({"oledsc": "0"})
 
         spokenCommand, isDefault = speechToText()
@@ -245,6 +246,7 @@ while True:
             db2.child("PI_03_CONTROL").update({"lcdtxt": "Time spent = " + peepooTime + "s"})
         else: # Used 100 to 999 seconds
             db2.child("PI_03_CONTROL").update({"lcdtxt": "Time spent= " + peepooTime + "s"})
+        takePic("lcdTime", "lt") # Take picture of time spent for pee or poo on lcd
 
         data = {
             "relay1": str(0),
@@ -255,7 +257,9 @@ while True:
         while True:
             if (updUltsensor("ultra1")>200):
                 db2.child("PI_03_CONTROL").update(data)
+                takePic("userOut", "uo") # Take pictures of relays off
                 break
+        
 
         #TODO
         #detect poo/urine type based on pi image

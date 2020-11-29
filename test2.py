@@ -49,48 +49,29 @@ user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com", "Beyo
 db2 = firebase2.database()
 storage2 = firebase2.storage()
 
-c = 0  #subfolder initialization
+def takePic(folder, fileType):
 
-wash_v = ["wash", "war", "lasts", "watch"]  #list of words meant to mean wash
-flush_v = ["flush", "flash", "lush", "slush", "flourish"]
+    firebase2 = pyrebase.initialize_app(setConfig(1))
+    auth2 = firebase2.auth()
+    user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com", "BeyondEducationH03")
+    db2 = firebase2.database()
+    storage2 = firebase2.storage()
 
-
-def speechToText():
-
-    timeout = (datetime.now() + timedelta(seconds=60)).time()
-    timeout = datetime.combine(date.today(), timeout)
-    #if user doesnt give a correct command in 60s, toilet will flush automatically
-    while True:
+    all_files = storage2.child("PI_03_CONTROL").list_files()
+    for file in all_files:            
         try:
-            with sr.Microphone() as source2:
+            if (file.name != "images/oled.jpg"):
+                lastPic = file.name
+        except:    
+            print('File not found') 
 
-                r = sr.Recognizer()
-                r.adjust_for_ambient_noise(source2, duration=0.2)
+    firebase2 = pyrebase.initialize_app(setConfig(0))
+    auth2 = firebase2.auth()
+    user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com", "BeyondEducationH03")
+    db2 = firebase2.database()
+    storage2 = firebase2.storage()
 
-                #listens for the user's input
-                print("Listening.....")
-                audio2 = r.listen(source2)
-                print("Processing.....")
+    picPath = folder + "/" + fileType + "_" + strftime("%Y%m%d%H%M%S", localtime()) + ".jpg"
+    storage1.child(picPath).put("C:/Users/lengz/smart-toilet/lastPic.jpg")
 
-                MyText = r.recognize_google(audio2)
-                MyText = MyText.lower()
-                print(MyText)
-                if MyText.split()[0] in (wash_v + flush_v) and len(MyText.split()) in [1,4]:
-                    if (len(MyText.split()) == 1):
-                        return MyText, True  #whether is default flush/wash time or not
-                    else:
-                        return MyText, False
-                else:
-                    print("Please repeat your command")
-
-        except sr.RequestError as e:
-            print("Could not request results; {0}".format(e))
-
-        except sr.UnknownValueError:
-            print("Please repeat")
-
-        finally:
-            if (datetime.now() > timeout):
-                return "flush", True
-
-speechToText()
+takePic("userOut", "uo")
