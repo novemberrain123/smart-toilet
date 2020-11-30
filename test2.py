@@ -50,33 +50,36 @@ auth2 = firebase2.auth()
 user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com", "BeyondEducationH03")
 db2 = firebase2.database()
 storage2 = firebase2.storage()
+def findType(s):
+    wastage = Image.open(s)
 
-wastage = Image.open("wastage.jpg")
+    rectangle = (130, 340, 200, 440)
+    cropped_wastage = wastage.crop(rectangle)
 
-rectangle = (130, 340, 200, 440)
-cropped_wastage = wastage.crop(rectangle)
 
-cropped_wastage.show()
+    r1, g1, b1 = cropped_wastage_surrounding = cropped_wastage.getpixel((0,0))
+    r2, g2, b2 = cropped_wastage_middle = cropped_wastage.getpixel((35,50))
 
-r1, g1, b1 = cropped_wastage_surrounding = cropped_wastage.getpixel((0,0))
-r2, g2, b2 = cropped_wastage_middle = cropped_wastage.getpixel((35,50))
+    print(cropped_wastage_surrounding)
+    print(cropped_wastage_middle)
 
-print(cropped_wastage_surrounding)
-print(cropped_wastage_middle)
+    if (r1-r2) in range(-50,50) and (g1-g2) in range(-50,50) and (b1-b2) in range(-50,50): # pee
+        if r1 in range(250,256) and g1 in range(250,256) and b1 in range(250,256): # clear pee
+            wastageType = "pee_clear"
+        else:
+            wastageType = "pee_yellow"
 
-if (r1-r2) in range(-5,6) and (g1-g2) in range(-5,6) and (b1-b2) in range(-5,6): # pee
-    if r1 in range(250,256) and g1 in range(250,256) and b1 in range(250,256): # clear pee
-        wastageType = "pee_clear"
-    elif r1 in range(0,6) and g1 in range(0,6) and b1 in range(0,6): # yellow pee
-        wastageType = "pee_yellow"
-    else: # pink pee
-        wastageType = "pee_pink"
-else: # poo
-    if r2 in range(250,256) and g2 in range(250,256) and b2 in range(250,256): # black poo
-        wastageType = "poo_black"
-    elif r2 in range(0,6) and g2 in range(0,6) and b2 in range(0,6): # yellow poo
-        wastageType = "poo_yellow"
-    else: # pink poo
-        wastageType = "poo_brown"
+    else: # poo
+        if r2 in range(200,256) and g2 in range(200,256) and b2 in range(200,256): # black poo
+            wastageType = "poo_black"
+        else: 
+            wastageType = "poo_yellow"
 
-print(wastageType)
+
+    print(wastageType)
+bin = [
+        "pclear", "pyellow", "pooblack",
+        "pooyellow"
+    ]
+for i in bin:
+    findType(i+'.jpg')

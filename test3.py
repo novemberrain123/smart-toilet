@@ -60,8 +60,7 @@ def takePic(folder, fileType):
 
     db2.child("PI_03_CONTROL").update({"camera": str(1)})
     print(str(datetime.now()))
-    sleep(10)
-    print(str(datetime.now()))
+    sleep(15)
     db2.child("PI_03_CONTROL").update({"camera": str(0)})
     all_files = storage2.child("PI_03_CONTROL").list_files()
     for file in all_files:            
@@ -79,7 +78,9 @@ def takePic(folder, fileType):
 
     picPath = folder + "/" + fileType + "_" + strftime("%Y%m%d%H%M%S", localtime()) + ".jpg"
     storage2.child(lastPic).download("C:", "lastPic.jpg", user2['idToken'])
-    storage1.child(picPath).put("C:/Users/lengz/smart-toilet/lastPic.jpg")
+    cwd = str(Path.cwd())
+    cwd = '/'.join(cwd.split('\\'))
+    storage1.child(picPath).put(cwd + "/lastPic.jpg")
 
 #random image is chosen and displayed
 while True:
@@ -87,14 +88,16 @@ while True:
     cwd = '/'.join(cwd.split('\\'))
     print(cwd)
     bin = [
-        "pee_clear", "pee_yellow", "pee_pink", "poo_black", "poo_brown",
+        "pee_clear", "pee_yellow", "poo_black",
         "poo_yellow"
     ]
     for x in bin:
+        print(x)
         randS = cwd + "/img/" + x + ".png"
         storage2.child("images/oled.jpg").put(randS)
+        sleep(1)
         db2.child("PI_03_CONTROL").update({"oledsc": "1"})
-        sleep(10)
+        sleep(3)
         takePic("wastage", "wt") # wastage picture taken
         db2.child("PI_03_CONTROL").update({"oledsc": "0"})
     break
