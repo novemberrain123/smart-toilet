@@ -16,6 +16,7 @@ from flask.helpers import url_for
 import numpy as np
 from threading import Thread
 app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 #MAIN
 day = strftime("%Y%m%d", localtime())  #subfolder initialization
 count = "00"
@@ -73,7 +74,7 @@ db2 = firebase2.database()
 storage2 = firebase2.storage()
 
 
-def generateReport(day):
+def generateReport(day): #FOR JS: Report generated here, just use outputConsole() to make it appear on website, please help do it :)
     y = db1.child("main").child(day).order_by_key().get()
     for keyValue in y:
         x = str(keyValue.key())
@@ -116,8 +117,8 @@ def generateReport(day):
     }
     db1.child("main").child(day).update(peepoo)
 
-
-def takePic(folder, fileType):
+#FOR JS:theres only one folder for image storage now to make display images easier as theres no easy way to let js know what image is currently relevant
+def takePic(isWastage, fileType):
     firebase2 = pyrebase.initialize_app(setConfig(1))
     auth2 = firebase2.auth()
     user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com",
@@ -144,16 +145,17 @@ def takePic(folder, fileType):
     storage2 = firebase2.storage()
 
     storage2.child(lastPic).download("C:", "lastPic.jpg", user2['idToken'])
-    if (folder == "wastage"):
+    if (isWastage == 1): #FOR JS: isWastage indicate wether its wastage pic
         storage2.child(lastPic).download(
             "C:", "wastage.jpg",
             user2['idToken'])  #For detecting pee or poo type later
 
-    picPath = folder + "/" + fileType + "_" + strftime("%Y%m%d%H%M%S",
+    picName = fileType + "_" + strftime("%Y%m%d%H%M%S",
                                                        localtime()) + ".jpg"
+    db1.child("main").update({"LatestPic":picName}) #FOR JS: Name of pic uploaded to DB to make retrieving & displaying easier
     cwd = str(Path.cwd())
     cwd = '/'.join(cwd.split('\\'))
-    storage1.child(picPath).put(cwd + "/lastPic.jpg")
+    storage1.child("main/"+picName).put(cwd + "/lastPic.jpg")
 
 
 def getLatestSubfolder():
@@ -304,7 +306,7 @@ def run():
                     break
                 sleep(9)
 
-            takePic("userIn", "ui")  # Take pictures of relays on
+            takePic(0, "ui")  # Take pictures of relays on
             outputConsole("User has entered...")
 
             #record time user spends on toilet actually pooing/peeing
@@ -342,7 +344,7 @@ def run():
             storage2.child("images/oled.jpg").put(randS)
             db2.child("PI_03_CONTROL").update({"oledsc": "1"})
             sleep(10)
-            takePic("wastage", "wt")  # wastage picture taken
+            takePic(1, "wt")  # wastage picture taken
             db2.child("PI_03_CONTROL").update({"oledsc": "0"})
             outputConsole("Image of wastage taken...")
 
@@ -405,7 +407,7 @@ def run():
             outputConsole("Displaying time spent...")
 
             sleep(2)
-            takePic("lcdTime",
+            takePic(0,
                     "lt")  # Take picture of time spent for pee or poo on lcd
 
             data = {
@@ -418,7 +420,7 @@ def run():
             while True:
                 if (300 > 200):
                     db2.child("PI_03_CONTROL").update(data)
-                    takePic("userOut", "uo")  # Take pictures of relays off
+                    takePic(0, "uo")  # Take pictures of relays off
                     break
             outputConsole("User has left...")
 
