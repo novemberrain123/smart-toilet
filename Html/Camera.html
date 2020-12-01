@@ -18,21 +18,93 @@
     <div class="left" style="margin-left: 120px;">
         <a href="Microphone.html" style="text-decoration: none;"><button style=" background-color: rgb(143, 189, 145);border: 1px solid rgb(143, 189, 145);">MICROPHONE</button></a>
         <a href="Camera.html" style="text-decoration: none;"><button style="border: 1px solid rgb(67, 100, 172);background-color: rgb(67, 100, 172);">CAMERA</button></a>
-        <a href="Graphs.html" style="text-decoration: none;"><button style="border: 1px solid rgb(202, 151, 41); background-color: rgb(202, 151, 41);">GRAPHS</button></a>
+        <a href="../index.html" style="text-decoration: none;"><button style="border: 1px solid rgb(202, 151, 41); background-color: rgb(202, 151, 41);">GRAPHS</button></a>
     </div>
     <!--div for class buttons-->
 
     <div class="right" style="font-size: 15px;border: 11px solid rgb(216, 69, 69);">
     <div class="video">
-    <button>Start Recording</button>
-    <button>Stop Recording</button>
+    <button id="retrieve">Retreive Photo</button>
+    <button><a href="Camera.html" style="text-decoration: none;color: white;">Refresh</a></button>
+    <img id="img" style="height: 320px;width:500px;margin-left: 40px;border: 2px solid white;"></img>
     </div>
     </div>
     <!--div for class display-->
 </div>
-   
+<script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-storage.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-database.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- <script src="assets/javascript/app.js"></script> -->
+<script src="assets/javascript/app.js"></script>
+<!--This will link to firebase chart-->
+<script src="assets/javascript/charts.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+crossorigin="anonymous"></script>  
+<script>
 
 
+var config = {
+  apiKey: "AIzaSyAH0JTJqYZaKiO-GssnbO9lIW_Z9-HMu0c",
+  authDomain: "smart-toilet-adc07.firebaseapp.com",
+  databaseURL: "https://smart-toilet-adc07.firebaseio.com",
+  projectId: "smart-toilet-adc07",
+  storageBucket: "smart-toilet-adc07.appspot.com",
+  messagingSenderId: "957295405488",
+  // appId: "1:957295405488:web:e1ef9592e182de5c670e75",
+  // measurementId: "G-H534KJ3HY5"
+};
+firebase.initializeApp(config);
+
+
+
+document.getElementById("retrieve").onclick = function()
+{
+    var test=[];
+    var i=0;
+    var storageRef = firebase.storage().ref("wastage");
+
+    // Now we get the references of these images
+    storageRef.listAll().then(function(result) {
+      result.items.forEach(function(imageRef) {
+        // And finally display them
+        displayImage(imageRef);
+      });
+    }).catch(function(error) {
+      // Handle any errors
+    });
+
+    function displayImage(imageRef) {
+      imageRef.getDownloadURL().then(function(url) {
+        
+        test[i] = url;  
+        display(test);    
+        i++;
+             
+      }).catch(function(error) {
+        // Handle any errors
+      });
+    }
+
+function display(test){
+ 
+    test.sort();
+    document.querySelector('img').src = test[test.length-1];
+
+}    
+
+} 
+
+
+</script>
 </body>
 
 

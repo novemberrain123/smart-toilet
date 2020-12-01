@@ -5,6 +5,7 @@
     <head>
         <title>Graphs</title>
         <link href="Html/style.css" rel="stylesheet">
+        
         <meta name="viewport" content="width=device-width, initial-scale=1">
         
     </head>
@@ -18,20 +19,18 @@
         </div>
         <div>
     <div class="left" style="margin-left: 120px;">
-        <a href="Microphone.html" style="text-decoration: none;"><button style=" background-color: rgb(143, 189, 145);border: 1px solid rgb(143, 189, 145);">MICROPHONE</button></a>
-        <a href="Camera.html" style="text-decoration: none;"><button style="border: 1px solid rgb(67, 100, 172);background-color: rgb(67, 100, 172);">CAMERA</button></a>
-        <a href="Graphs.html" style="text-decoration: none;"><button style="border: 1px solid rgb(202, 151, 41); background-color: rgb(202, 151, 41);">GRAPHS</button></a>
+        <a href="Html/Microphone.html" style="text-decoration: none;"><button style=" background-color: rgb(143, 189, 145);border: 1px solid rgb(143, 189, 145);">MICROPHONE</button></a>
+        <a href="Html/Camera.html" style="text-decoration: none;"><button style="border: 1px solid rgb(67, 100, 172);background-color: rgb(67, 100, 172);">CAMERA</button></a>
+        <a href="index.html" style="text-decoration: none;"><button style="border: 1px solid rgb(202, 151, 41); background-color: rgb(202, 151, 41);">GRAPHS</button></a>
     </div>
     <!--div for class buttons-->
 
     <div class="right" style="font-size: 15px;border: 11px solid rgb(216, 69, 69);width: 573px; height: 300px;margin-left: 30px;">
     <div class="report" style="margin-left: 50px;">
-    <div id="image" style="margin-left: -60.7px;margin-top: -19.5px;">
-        <div class="container-fluid w-75 h-50 text-center bg-white" id="user-stats" style="display:none">
-            <canvas id="myChart"></canvas>
+        <div style="margin-left: -60.7px;margin-top: -19.5px;">
+            <img id="image" src="Html/pictures/stoilet2.png" usemap="#image-map">
         </div>
-        <img src="Html/pictures/stoilet2.png" usemap="#image-map">
-    </div>
+        <div id="chartContainer" style="height: 370px; width:100%;display: none;"></div>
         
       
 
@@ -42,7 +41,7 @@
 </div>
 
 <map name="image-map">
-    <area id="stats" target="_blank" alt="Ultrasonic1"  href="Html/Ult1_Graph.html" title="Ultrasonic1" coords="43,133,71,107" shape="rect">
+    <area id="stats" alt="Ultrasonic1"  href="#" title="Ultrasonic1" coords="43,133,71,107" shape="rect">
     <area target="_blank" alt="Ultrasonic2" title="Ultrasonic2" href="Html/Ult2_Graph.html" coords="232,231,202,203" shape="rect">
     <area target="_blank" alt="Camera" title="Camera" href="" coords="227,169,249,147" shape="rect">
     <area target="_blank" alt="Microphone" title="Microphone" href="" coords="350,31,321,7" shape="rect">
@@ -54,7 +53,23 @@
     <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-database.js"></script>
-    <script type="module" language="JavaScript" src="Html/test.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- <script src="assets/javascript/app.js"></script> -->
+    <script src="assets/javascript/app.js"></script>
+    <!--This will link to firebase chart-->
+    <script src="assets/javascript/charts.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+    <script src="Html/smart_toilet.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+   
     
 </body>
 

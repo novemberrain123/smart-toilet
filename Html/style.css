@@ -1,10 +1,10 @@
 
 .right {
-    width: 1000px;
+    width: 600px;
     padding-left: 10px;
     padding-top: 20px;
     margin-top: 120px;
-    height: 1000px;
+    height: 400px;
     float: left;
 
 }
@@ -61,7 +61,7 @@
     padding: 20px 10px;
     cursor: pointer;
     width: 30%;
-    margin-left: 60px;
+    margin-left: 75px;
     margin-top: 10px;
     background-color: rgb(67, 100, 172);  
 }

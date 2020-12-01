@@ -17,7 +17,7 @@
 };
 firebase.initializeApp(config);
 
-window.onload = function () {
+document.getElementById('image').onload = function() {
 
 var dps = []; // dataPoints
 var chart = new CanvasJS.Chart("chartContainer", {
