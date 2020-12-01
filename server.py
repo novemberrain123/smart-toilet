@@ -4,6 +4,7 @@ from flask.helpers import url_for
 from main import runMain
 app = Flask(__name__)
 stop_run = False
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 @app.route('/')
 def index():
