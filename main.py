@@ -14,8 +14,9 @@ from PIL import ImageOps
 from flask import Flask
 app = Flask(__name__)
 
+
 def setConfig(x):
-    if (x==0):
+    if (x == 0):
         config2 = {
             "apiKey": "AIzaSyAs_1NVtsjZ-LmTATAp0a0R5fK6XdKHaMU",
             "authDomain": "bait2123-202010-03.firebaseapp.com",
@@ -26,11 +27,16 @@ def setConfig(x):
 
     else:
         config2 = {
-            "apiKey": "AIzaSyAs_1NVtsjZ-LmTATAp0a0R5fK6XdKHaMU",
-            "authDomain": "bait2123-202010-03.firebaseapp.com",
-            "databaseURL": "https://bait2123-202010-03.firebaseio.com/",
-            "storageBucket": "bait2123-202010-03.appspot.com",
-            "serviceAccount": ".vscode/bait2123-202010-03-firebase-adminsdk-xmqwi-1caf6b0286.json"
+            "apiKey":
+            "AIzaSyAs_1NVtsjZ-LmTATAp0a0R5fK6XdKHaMU",
+            "authDomain":
+            "bait2123-202010-03.firebaseapp.com",
+            "databaseURL":
+            "https://bait2123-202010-03.firebaseio.com/",
+            "storageBucket":
+            "bait2123-202010-03.appspot.com",
+            "serviceAccount":
+            ".vscode/bait2123-202010-03-firebase-adminsdk-xmqwi-1caf6b0286.json"
         }
         return config2
 
@@ -44,14 +50,15 @@ config1 = {
 
 firebase1 = pyrebase.initialize_app(config1)
 auth1 = firebase1.auth()
-user1 = auth1.sign_in_with_email_and_password("pleaseworkusob@gmail.com", "Aa123456")
+user1 = auth1.sign_in_with_email_and_password("pleaseworkusob@gmail.com",
+                                              "Aa123456")
 db1 = firebase1.database()
 storage1 = firebase1.storage()
 
-
 firebase2 = pyrebase.initialize_app(setConfig(0))
 auth2 = firebase2.auth()
-user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com", "BeyondEducationH03")
+user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com",
+                                              "BeyondEducationH03")
 db2 = firebase2.database()
 storage2 = firebase2.storage()
 
@@ -59,7 +66,8 @@ storage2 = firebase2.storage()
 def takePic(folder, fileType):
     firebase2 = pyrebase.initialize_app(setConfig(1))
     auth2 = firebase2.auth()
-    user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com", "BeyondEducationH03")
+    user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com",
+                                                  "BeyondEducationH03")
     db2 = firebase2.database()
     storage2 = firebase2.storage()
 
@@ -68,27 +76,31 @@ def takePic(folder, fileType):
     sleep(10)
     db2.child("PI_03_CONTROL").update({"camera": str(0)})
     all_files = storage2.child("PI_03_CONTROL").list_files()
-    for file in all_files:            
+    for file in all_files:
         try:
             if (file.name != "images/oled.jpg"):
                 lastPic = file.name
-        except:    
-            print('File not found')   
+        except:
+            print('File not found')
 
     firebase2 = pyrebase.initialize_app(setConfig(0))
     auth2 = firebase2.auth()
-    user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com", "BeyondEducationH03")
+    user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com",
+                                                  "BeyondEducationH03")
     db2 = firebase2.database()
     storage2 = firebase2.storage()
 
     storage2.child(lastPic).download("C:", "lastPic.jpg", user2['idToken'])
     if (folder == "wastage"):
-        storage2.child(lastPic).download("C:", "wastage.jpg", user2['idToken']) #For detecting pee or poo type later
+        storage2.child(lastPic).download(
+            "C:", "wastage.jpg",
+            user2['idToken'])  #For detecting pee or poo type later
 
-    picPath = folder + "/" + fileType + "_" + strftime("%Y%m%d%H%M%S", localtime()) + ".jpg"
+    picPath = folder + "/" + fileType + "_" + strftime("%Y%m%d%H%M%S",
+                                                       localtime()) + ".jpg"
     cwd = str(Path.cwd())
     cwd = '/'.join(cwd.split('\\'))
-    storage1.child(picPath).put(cwd +"/lastPic.jpg")
+    storage1.child(picPath).put(cwd + "/lastPic.jpg")
 
 
 def getLatestSubfolder():
@@ -120,8 +132,10 @@ def updSensor(input, output):
     y, hour, date = getLatestSubfolder()
     for keyValue in y:
         x = str(keyValue.key())
-        results = db2.child("PI_03_" + date).child(hour).child(x).child(input).get().val()
-        db1.child("main").child(day).child(count).update({output: str(results)})
+        results = db2.child("PI_03_" + date).child(hour).child(x).child(
+            input).get().val()
+        db1.child("main").child(day).child(count).update(
+            {output: str(results)})
 
 
 def speechToText():
@@ -137,57 +151,67 @@ def speechToText():
                 r.adjust_for_ambient_noise(source2, duration=0.2)
 
                 #listens for the user's input
-                print("Listening...")
+                db1.child("main").update({"console": "Listening..."})
+                sleep(1)
                 audio2 = r.listen(source2)
-                print("Processing...")
+                db1.child("main").update({"console": "Processing..."})
 
                 MyText = r.recognize_google(audio2)
                 MyText = MyText.lower()
                 print(MyText)
-                if MyText.split()[0] in (wash_v + flush_v) and len(MyText.split()) in [1,4]:
+                if MyText.split()[0] in (wash_v + flush_v) and len(
+                        MyText.split()) in [1, 4]:
                     if (len(MyText.split()) == 1):
                         return MyText, True  #whether is default flush/wash time or not
                     elif not (MyText.split()[2].isdigit()):
-                        print("Please repeat your command")
+                        db1.child("main").update(
+                            {"console": "Repeat your command..."})
                     else:
                         return MyText, False
                 else:
-                    print("Please repeat your command")
+                    db1.child("main").update(
+                        {"console": "Repeat your command..."})
 
         except sr.RequestError as e:
             print("Could not request results; {0}".format(e))
 
         except sr.UnknownValueError:
-            print("Please repeat")
+            db1.child("main").update({"console": "Repeat your command..."})
 
         finally:
             if (datetime.now() > timeout):
                 return "flush", True
+
+
 def findType(s):
     wastage = Image.open(s)
 
     rectangle = (130, 340, 200, 440)
     cropped_wastage = wastage.crop(rectangle)
 
-
-    r1, g1, b1 = cropped_wastage_surrounding = cropped_wastage.getpixel((0,0))
-    r2, g2, b2 = cropped_wastage_middle = cropped_wastage.getpixel((35,50))
+    r1, g1, b1 = cropped_wastage_surrounding = cropped_wastage.getpixel((0, 0))
+    r2, g2, b2 = cropped_wastage_middle = cropped_wastage.getpixel((35, 50))
 
     print(cropped_wastage_surrounding)
     print(cropped_wastage_middle)
 
-    if (r1-r2) in range(-50,50) and (g1-g2) in range(-50,50) and (b1-b2) in range(-50,50): # pee
-        if r1 in range(250,256) and g1 in range(250,256) and b1 in range(250,256): # clear pee
+    if (r1 - r2) in range(-50, 50) and (g1 - g2) in range(
+            -50, 50) and (b1 - b2) in range(-50, 50):  # pee
+        if r1 in range(250, 256) and g1 in range(250, 256) and b1 in range(
+                250, 256):  # clear pee
             wastageType = "pee_clear"
         else:
             wastageType = "pee_yellow"
 
-    else: # poo
-        if r2 in range(200,256) and g2 in range(200,256) and b2 in range(200,256): # black poo
+    else:  # poo
+        if r2 in range(200, 256) and g2 in range(200, 256) and b2 in range(
+                200, 256):  # black poo
             wastageType = "poo_black"
-        else: 
+        else:
             wastageType = "poo_yellow"
     return wastageType
+
+
 #MAIN
 day = strftime("%Y%m%d", localtime()) #subfolder initialization
 count = "00"
@@ -195,16 +219,19 @@ c = 0
 wash_v = ["wash", "war", "lasts", "watch"]  #list of words meant to mean wash
 flush_v = ["flush", "flash", "lush", "slush", "flourish"]
 
-while True:
-    while str(datetime.now())[11:19]!="00:00:00":
+
+def runMain():
+    while True:
         try:
+            day = strftime("%Y%m%d", localtime())
+            db1.child("main").update({"console": "Started..."})
             data = {
-                "ultra1":"", #user distance to toilet
-                "ultra2":"", #toilet bowl distance from one side to opposite side
-                "time":"", #Actual time where defecating/urinating happened
-                "sound":"", #Buzzer sound representing bidet washing
-                "led":"", #Led light representing flushing
-                "wastageType":"", #Type of wastage & its color
+                "ultra1": "",  #user distance to toilet
+                "ultra2": "",  #distance between toilet bowl sides
+                "time": "",  #Actual time where waste happened
+                "sound": "",  #Buzzer sound representing bidet washing
+                "led": "",  #Led light representing flushing
+                "wastageType": "",  #Type of wastage & its color
             }
             db1.child("main").child(day).child(count).update(data)
             #red light & white light == on, blue light & green light == off
@@ -214,78 +241,88 @@ while True:
             }
             #if user detected turn relay1 and relay2 updUltsensor("ultra1")
             while True:
-                if (1<= 20):
+                if (updUltsensor("ultra1") <= 20):
                     db2.child("PI_03_CONTROL").update(data)
                     break
                 sleep(9)
 
-            takePic("userIn", "ui") # Take pictures of relays on
+            takePic("userIn", "ui")  # Take pictures of relays on
+            db1.child("main").update({"console": "User has entered..."})
 
+            #record time user spends on toilet actually pooing/peeing
+            #if ultra2 is >20 for more than 15 secs, considered to be done & timer will stop
             check = True
-            while check: #updUltsensor("ultra2")
-                if (1 <= 20):
+            while check:  #updUltsensor("ultra2")
+                if (updUltsensor("ultra2") <= 20):
                     beginTime = perf_counter()
                     while check:
-                        if (333 > 20):
+                        if (updUltsensor("ultra2") > 20):
                             secondTime = perf_counter()
                             while check:
-                                if (333 > 20):
+                                if (updUltsensor("ultra2") > 20):
                                     if ((perf_counter() - secondTime) > 15):
                                         check = False
                                 else:
                                     break
             peepooTime = ceil(perf_counter() - beginTime - 15)
             #update time to main db
-            db1.child("main").child(day).child(count).update({"time": str(peepooTime)})
+            db1.child("main").child(day).child(count).update(
+                {"time": str(peepooTime)})
+            db1.child("main").update({"console": "User has finished..."})
 
             #random image is chosen and displayed
             cwd = str(Path.cwd())
             cwd = '/'.join(cwd.split('\\'))
             print(cwd)
-            bin = [
-                "pee_clear", "pee_yellow", "poo_black",
-                "poo_yellow"
-            ]
+            bin = ["pee_clear", "pee_yellow", "poo_black", "poo_yellow"]
             x = random.choice(bin)
             print(x)
             randS = cwd + "/img/" + x + ".png"
             storage2.child("images/oled.jpg").put(randS)
             db2.child("PI_03_CONTROL").update({"oledsc": "1"})
             sleep(10)
-            takePic("wastage", "wt") # wastage picture taken
+            takePic("wastage", "wt")  # wastage picture taken
             db2.child("PI_03_CONTROL").update({"oledsc": "0"})
-
+            db1.child("main").update({"console": "Image of wastage taken..."})
 
             spokenCommand, isDefault = speechToText()
 
             #if wash is spoken, will wash (allowed multiple times), then flush
-            while True: 
+            while True:
                 if (spokenCommand.split(' ')[0] in wash_v):
                     washTime = int(
                         spokenCommand.split(' ')[2]) if not isDefault else 20
                     db2.child("PI_03_CONTROL").update({"buzzer": "1"})
-                    timeout = (datetime.now() + timedelta(seconds=washTime)).time()  #loop time = washTime
+                    timeout = (datetime.now() + timedelta(seconds=washTime)
+                               ).time()  #loop time = washTime
                     timeout = datetime.combine(date.today(), timeout)
+                    db1.child("main").update(
+                        {"console": "Washing for {}s...".format(washTime)})
                     while True:
                         updSensor("sound", "sound")
                         if (datetime.now() > timeout):
                             break
                     db2.child("PI_03_CONTROL").update({"buzzer": "0"})
-                    print("Done washing")
+                    db1.child("main").update(
+                        {"console": "Finished washing..."})
                     spokenCommand, isDefault = speechToText()
                 else:
                     break
-            
+
             #flushing
-            flushTime = int(spokenCommand.split(' ')[2]) if not isDefault else 15
+            flushTime = int(
+                spokenCommand.split(' ')[2]) if not isDefault else 15
             db2.child("PI_03_CONTROL").update({"ledlgt": "1"})
             timeout = (datetime.now() + timedelta(seconds=flushTime)).time()
             timeout = datetime.combine(date.today(), timeout)
+            db1.child("main").update(
+                {"console": "Flushing for {}s...".format(flushTime)})
             while True:
                 updSensor("light", "led")
                 if (datetime.now() > timeout):
                     break
             db2.child("PI_03_CONTROL").update({"ledlgt": "0"})
+            db1.child("main").update({"console": "Finished flushing..."})
 
             #display time actually spent pooing or urinating
             lcdColor = {
@@ -295,32 +332,42 @@ while True:
             }
             db2.child("PI_03_CONTROL").update(lcdColor)
             peepooTime = str(peepooTime)
-            if (len(peepooTime) == 2): # Used 10 to 99 seconds
-                db2.child("PI_03_CONTROL").update({"lcdtxt": "Time spent = " + peepooTime + "s"})
-            elif(len(peepooTime)==1):
-                db2.child("PI_03_CONTROL").update({"lcdtxt": "Time spent =  " + peepooTime + "s"})
-            else: # Used 100 to 999 seconds
-                db2.child("PI_03_CONTROL").update({"lcdtxt": "Time spent= " + peepooTime + "s"})
+            if (len(peepooTime) == 2):  # Used 10 to 99 seconds
+                db2.child("PI_03_CONTROL").update(
+                    {"lcdtxt": "Time spent = " + peepooTime + "s"})
+            elif (len(peepooTime) == 1):
+                db2.child("PI_03_CONTROL").update(
+                    {"lcdtxt": "Time spent =  " + peepooTime + "s"})
+            else:  # Used 100 to 999 seconds
+                db2.child("PI_03_CONTROL").update(
+                    {"lcdtxt": "Time spent= " + peepooTime + "s"})
+            db1.child("main").update({"console": "Displaying time spent..."})
+
             sleep(2)
-            takePic("lcdTime", "lt") # Take picture of time spent for pee or poo on lcd
+            takePic("lcdTime",
+                    "lt")  # Take picture of time spent for pee or poo on lcd
 
             data = {
                 "relay1": str(0),
                 "relay2": str(0),
             }
 
+            db1.child("main").update({"console": "User may leave..."})
             #detect user leaving & present report afterwards
             while True:
-                if (updUltsensor("ultra1")>200):
+                if (updUltsensor("ultra1") > 200):
                     db2.child("PI_03_CONTROL").update(data)
-                    takePic("userOut", "uo") # Take pictures of relays off
+                    takePic("userOut", "uo")  # Take pictures of relays off
                     break
-            
+            db1.child("main").update({"console": "User has left..."})
 
             #TODO
             #detect poo/urine type based on pi image
             wastageType = findType("wastage.jpg")
-            db1.child("main").child(day).child(count).update({"wastageType": wastageType})
+            db1.child("main").child(day).child(count).update(
+                {"wastageType": wastageType})
+            db1.child("main").update(
+                {"console": "Wastage type & color detected..."})
 
             #give recommendations to user based on that
             #integrate python with javascript & deploy
@@ -331,4 +378,3 @@ while True:
             break
         except KeyboardInterrupt:
             exit
-    day = strftime("%Y%m%d", localtime())
