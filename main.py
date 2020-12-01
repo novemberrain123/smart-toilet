@@ -12,8 +12,17 @@ from math import ceil
 from PIL import Image
 from PIL import ImageOps
 from flask import Flask
+from flask import Flask, render_template
+from flask.helpers import url_for
+import numpy as np
 app = Flask(__name__)
-
+stop_run = False
+#MAIN
+day = strftime("%Y%m%d", localtime()) #subfolder initialization
+count = "00"
+c = 0
+wash_v = ["wash", "war", "lasts", "watch"]  #list of words meant to mean wash
+flush_v = ["flush", "flash", "lush", "slush", "flourish"]
 
 def setConfig(x):
     if (x == 0):
@@ -40,7 +49,6 @@ def setConfig(x):
         }
         return config2
 
-
 config1 = {
     "apiKey": "AIzaSyAH0JTJqYZaKiO-GssnbO9lIW_Z9-HMu0c",
     "authDomain": "smart-toilet-adc07.firebaseapp.com",
@@ -61,6 +69,44 @@ user2 = auth2.sign_in_with_email_and_password("bait2123.iot.03@gmail.com",
                                               "BeyondEducationH03")
 db2 = firebase2.database()
 storage2 = firebase2.storage()
+
+def generateReport(day):
+    y = db1.child("main").child(day).order_by_key().get()
+    for keyValue in y:
+        x = str(keyValue.key())
+        timeList = []
+        typeList = []
+        timeList += db1.child("main").child(day).child(x).child("time").get().val()  
+        typeList += db1.child("main").child(day).child(x).child("wastageType").get().val()
+    normalPeePooTime = 40
+    normalPeeCount = 7
+    normalPooCount = 1
+    averagePeePooTime = np.mean(timeList)
+    peeCount = 0
+    pooCount = 0
+    totalScore = 0
+    totalScore += (normalPeePooTime / averagePeePooTime)*0.1
+    for wType in typeList:
+        if (wType[:3] == "pee"):
+            peeCount += 1
+            if (wType == "pee_clear"):
+                totalScore += 1.2*0.2
+            else:
+                totalScore += 1*0.2
+        else:
+            pooCount += 1 
+            if (wType == "poo_yellow"):
+                totalScore += 1.2*0.2
+            else:
+                totalScore += 1*0.2
+    totalScore += (peeCount/normalPeeCount)*0.25 + (pooCount/normalPooCount)*0.25
+    totalScore /= 3 + len(typeList)
+    peepoo = {
+        "averagePeePooTime": averagePeePooTime,
+        "peeCount": peeCount,
+        "pooCount": pooCount,
+    }
+    db1.child("main").child(day).update(peepoo)
 
 
 def takePic(folder, fileType):
@@ -211,18 +257,17 @@ def findType(s):
             wastageType = "poo_yellow"
     return wastageType
 
+@app.route('/')
+def index():
+  return render_template('index.html')
 
-#MAIN
-day = strftime("%Y%m%d", localtime()) #subfolder initialization
-count = "00"
-c = 0
-wash_v = ["wash", "war", "lasts", "watch"]  #list of words meant to mean wash
-flush_v = ["flush", "flash", "lush", "slush", "flourish"]
-
-
-def runMain():
-    while True:
+@app.route('/run/')
+def run():
+    global stop_run
+    while not stop_run:
+        sleep(1)
         try:
+            global count
             day = strftime("%Y%m%d", localtime())
             db1.child("main").update({"console": "Started..."})
             data = {
@@ -370,11 +415,25 @@ def runMain():
                 {"console": "Wastage type & color detected..."})
 
             #give recommendations to user based on that
+            if (day != strftime("%Y%m%d", localtime())):
+                generateReport(day)
+
             #integrate python with javascript & deploy
             #data stored:
             #ultra1, ultra2, sound, light, time, wastagetype
             c += 1
             count = str(f'{c:02}')
+
             break
         except KeyboardInterrupt:
             exit
+
+
+@app.route("/stop/", methods=['GET'])
+def set_stop_run():
+  global stop_run
+  stop_run = True
+  return "Application stopped"
+
+if __name__ == '__main__':
+  app.run(debug=True)

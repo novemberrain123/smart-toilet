@@ -5,16 +5,20 @@ from main import runMain
 app = Flask(__name__)
 stop_run = False
 
+count = 0
+
 @app.route('/')
 def index():
-  return render_template('index.html')
+  return render_template('abc.html')
 
 @app.route('/run/')
 def run():
-  global stop_run
-  while not stop_run:
-    sleep(1)
-    return runMain()
+    global stop_run
+    while not stop_run:
+        sleep(1)
+        global count
+        count+=1
+        return (str(count))
 
 @app.route("/stop/", methods=['GET'])
 def set_stop_run():
