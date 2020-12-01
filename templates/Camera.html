@@ -4,32 +4,40 @@
 
     <head>
         <title>Camera</title>
-        <link href="style.css" rel="stylesheet">
+        <link href="{{url_for('static', filename='style.css')}}" rel="stylesheet">
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
 
 
-<body style="background-image:url('pictures/bckg.png');">
+<body style="background-image:url('../static/pictures/bckg.png');">
 
     <div>
-        <p style="font-size: 41px;margin-left: 570px;color:red;">Smart-Toilet System</p>
+        <p style="font-size: 41px;margin-left: 570px;"><a href="/" style="text-decoration: none;cursor:pointer;color:red;">Smart-Toilet System</p></a>
         </div>
         <div>
-    <div class="left" style="margin-left: 120px;">
-        <a href="Microphone.html" style="text-decoration: none;"><button style=" background-color: rgb(143, 189, 145);border: 1px solid rgb(143, 189, 145);">MICROPHONE</button></a>
-        <a href="Camera.html" style="text-decoration: none;"><button style="border: 1px solid rgb(67, 100, 172);background-color: rgb(67, 100, 172);">CAMERA</button></a>
-        <a href="../index.html" style="text-decoration: none;"><button style="border: 1px solid rgb(202, 151, 41); background-color: rgb(202, 151, 41);">GRAPHS</button></a>
-    </div>
+          <div class="top" style="float:top;margin-left:480px;">
+            <a href="/run/" style="text-decoration: none;"><button style=" background-color: rgb(143, 189, 145);border: 1px solid rgb(143, 189, 145);color: white;padding: 15px 40px;cursor: pointer;width: 15%;">START</button></a>
+            <a href="/stop/" style="text-decoration: none;"><button style=" background-color: rgb(189, 122, 34);border: 1px solid rgb(143, 189, 145);color: white;padding: 15px 40px;cursor: pointer;width: 15%;margin-left: 15px;">STOP</button></a>
+            <a href="/camera/" style="text-decoration: none;"><button style="border: 1px solid rgb(67, 100, 172);background-color: rgb(67, 100, 172);color: white;padding: 15px 40px;cursor: pointer;width: 15%;margin-left: 15px;">CAMERA</button></a>
+        
+        </div>
     <!--div for class buttons-->
 
-    <div class="right" style="font-size: 15px;border: 11px solid rgb(216, 69, 69);">
+
+    
+    <div style="font-size: 15px;border: 11px solid rgb(216, 69, 69);width:600px;margin-top:55px;margin-left:183px">
     <div class="video">
     <button id="retrieve">Retreive Photo</button>
     <button><a href="Camera.html" style="text-decoration: none;color: white;">Refresh</a></button>
     <img id="img" style="height: 320px;width:500px;margin-left: 40px;border: 2px solid white;"></img>
     </div>
     </div>
-    <!--div for class display-->
+
+    <div style="float: right;border: 11px solid rgb(216, 69, 69);margin-top:-415px;width:460px;height:450px;margin-right:130px;">
+        <textarea readonly style="height:470px;width:457px;margin-left:-1px;margin-top:-1px">
+
+        </textarea>
+    </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-storage.js"></script>

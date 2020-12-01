@@ -273,6 +273,8 @@ def index():
     return render_template('index.html')
 
 
+
+
 def run():
     global stop_run
     while not stop_run:
@@ -459,6 +461,11 @@ def set_stop_run():
     global stop_run
     stop_run = True
     return index()
+
+
+@app.route('/camera/')
+def camera():
+    return render_template('Camera.html')
 
 
 if __name__ == '__main__':
