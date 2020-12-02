@@ -42,9 +42,11 @@ $(document).ready(function () {
 $(document).ready(function () {
   $(document).on("click", "#retrieve", function () {
     // hide main and results pages + hide input form
-    $("#graph").hide();
+    $("#image").hide();
+    $("#chartContainer").hide();
     // display the charts
     $("#picture").attr("style", "display:block");
+    $("#picture").css("margin-top","-370px");
   });
 });
 
@@ -115,95 +117,7 @@ document.getElementById("retrieve").onclick = function () {
 };
 
 
-// //graph for ultrasonic 1
-// document.getElementById("ult1").onclick = function () {
-//   var dps = []; // dataPoints
-//   var chart = new CanvasJS.Chart("chartContainer", {
-//     title: {
-//       text: "Ultrasonic sensor value",
-//     },
-//     data: [
-//       {
-//         type: "line",
-//         dataPoints: dps,
-//       },
-//     ],
-//   });
-
-//   var xVal = 0;
-//   var yVal = 0;
-//   var updateInterval = 1000;
-//   var dataLength = 20; // number of dataPoints visible at any point
-//   var path;
-//   var nextPath;
-//   var key;
-
-//   var updateChart = function (count) {
-//     count = count || 1;
-
-//     for (var j = 0; j < count; j++) {
-//       var date = new Date();
-//       var year = date.getFullYear().toString();
-//       var month = (date.getMonth() + 1).toString();
-//       var day = date.getDate().toString();
-//       var days;
-//       if (day < 10) {
-//         days = ("0" + day).toString();
-//       } else {
-//         days = day.toString();
-//       }
-
-//       var query = firebase
-//         .database()
-//         .ref("main/" + year + month + days)
-//         .orderByKey();
-//       query.once("value").then(function (snapshot) {
-//         for (var x in snapshot.val()) {
-//           key = x;
-//         }
-//         path = parseInt(key);
-
-//         if (path >= 1000) {
-//           nextPath = toString(path);
-//         } else if (path >= 100) {
-//           nextPath = "0" + path.toString();
-//         } else if (path >= 10) {
-//           nextPath = "00" + path.toString();
-//         } else {
-//           nextPath = "000" + path.toString();
-//         }
-
-//         firebase
-//           .database()
-//           .ref("main/" + year + month + days + "/" + nextPath)
-//           .on("value", function (valSnapshot) {
-//             yVal = valSnapshot.val().ultra1;
-//           });
-//       });
-//       var yValue_1 = parseInt(yVal);
-
-//       dps.push({
-//         x: xVal,
-//         y: yValue_1,
-//       });
-
-//       xVal += 1;
-//     }
-
-//     if (dps.length > dataLength) {
-//       dps.shift();
-//     }
-
-//     chart.render();
-//   };
-
-//   updateChart(dataLength);
-//   setInterval(function () {
-//     updateChart();
-//   }, updateInterval);
-// };
-
-// //graph for ultrasonic2
+// //Display graphs
 document.getElementById("ult1").onclick = function() 
 {graphDisplay("ultra1")};
 
@@ -245,20 +159,21 @@ function graphDisplay(sensor_type)
     count = count || 1;
 
     for (var j = 0; j < count; j++) {
+      var sensorName=sensor_type.toString();
       var date = new Date();
-      var year = date.getFullYear().toString();
+      var year = (date.getFullYear()).toString();
       var month = (date.getMonth() + 1).toString();
-      var day = date.getDate().toString();
+      var day = (date.getDate()).toString();
       var days;
-      if (day < 10) {
+      if (parseInt(day) < 10) {
         days = ("0" + day).toString();
       } else {
         days = day.toString();
       }
-
+      var set=year.concat(month).concat(days);
       var query = firebase
         .database()
-        .ref("main/" + year + month + days)
+        .ref("main/"+set)
         .orderByKey();
       query.once("value").then(function (snapshot) {
         for (var x in snapshot.val()) {
@@ -267,22 +182,44 @@ function graphDisplay(sensor_type)
         path = parseInt(key);
 
         if (path >= 1000) {
-          nextPath = toString(path);
+          nextPath = path.toString();
         } else if (path >= 100) {
-          nextPath = "0" + path.toString();
+          nextPath =path.toString();
         } else if (path >= 10) {
-          nextPath = "00" + path.toString();
+          nextPath =path.toString();
         } else {
-          nextPath = "000" + path.toString();
+          nextPath = "0" + path.toString();
         }
-
+      
         firebase
           .database()
-          .ref("main/" + year + month + days + "/" + nextPath)
+          .ref("main/"+set+"/"+nextPath)
           .on("value", function (valSnapshot) {
-            yVal = valSnapshot.val().sensorName;
+
+            if(sensorName=="ultra1")
+            {
+              yVal = valSnapshot.val().ultra1;
+            }
+            else if(sensorName=="ultra2")
+            {
+              yVal = valSnapshot.val().ultra2;
+            }
+            else if(sensorName=="sound")
+            {
+              yVal = valSnapshot.val().sound;
+            }
+            else if(sensorName=="light")
+            {
+              yVal = valSnapshot.val().led;
+            }
+            else
+            {
+              yVal=null;
+            }
+            
           });
-      });
+        });
+      
 
       var yValue = parseInt(yVal);
 
