@@ -74,17 +74,23 @@ db2 = firebase2.database()
 storage2 = firebase2.storage()
 
 
-def generateReport(day): #FOR JS: Report generated here, just use outputConsole() to make it appear on website, please help do it :)
+def addScore(userCondition, normalCondition, divisor, maxScore, tScore):
+    if (userCondition == normalCondition):
+        tScore += maxScore
+    else:
+        tScore += maxScore - (abs(userCondition - normalCondition) / divisor)
+    return tScore
+
+
+def generateReport(day):
     y = db1.child("main").child(day).order_by_key().get()
     for keyValue in y:
         x = str(keyValue.key())
         timeList = []
         typeList = []
-        temp = float(
-            db1.child("main").child(day).child(x).child("time").get().val())
+        temp = db1.child("main").child(day).child(x).child("time").get().val()
         timeList.append(temp)
-        temp = db1.child("main").child(day).child(x).child(
-                "wastageType").get().val()
+        temp = db1.child("main").child(day).child(x).child("wastageType").get().val()
         typeList.append(temp)
     normalPeePooTime = 60
     normalPeeCount = 7
@@ -93,23 +99,7 @@ def generateReport(day): #FOR JS: Report generated here, just use outputConsole(
     peeCount = 0
     pooCount = 0
     totalScore = 0
-    totalScore += (normalPeePooTime / averagePeePooTime) * 0.1
-    for wType in typeList:
-        if (wType[:3] == "pee"):
-            peeCount += 1
-            if (wType == "pee_clear"):
-                totalScore += 1.2 * 0.2
-            else:
-                totalScore += 1 * 0.2
-        else:
-            pooCount += 1
-            if (wType == "poo_yellow"):
-                totalScore += 1.2 * 0.2
-            else:
-                totalScore += 1 * 0.2
-    totalScore += (peeCount / normalPeeCount) * 0.25 + (pooCount /
-                                                        normalPooCount) * 0.25
-    totalScore /= 3 + len(typeList)
+    
     peepoo = {
         "averagePeePooTime": averagePeePooTime,
         "peeCount": peeCount,
@@ -117,7 +107,53 @@ def generateReport(day): #FOR JS: Report generated here, just use outputConsole(
     }
     db1.child("main").child(day).update(peepoo)
 
-#FOR JS:theres only one folder for image storage now to make display images easier as theres no easy way to let js know what image is currently relevant
+    # Pee recommendation
+    if (peeCount - normalPeeCount) > 2:
+        outputConsole("Drink less water")
+    elif (peeCount - normalPeeCount) > -2:
+        outputConsole("Drink more water")
+    else: 
+        outputConsole("You are healthy :)")
+    
+    # Poo recommendation
+    if (pooCount - normalPooCount) > 2:
+        outputConsole("Stop eating curry")
+    elif (pooCount == 0):
+        outputConsole("Eat more vegetables")
+    else: 
+        outputConsole("You are healthy :)")
+
+    # Score per day
+    totalScore += 0.4
+    for wType in typeList:
+        if (wType[:3] == "pee"):
+            peeCount += 1
+            if (wType == "pee_yellow"):
+                totalScore -= 0.02
+        else:
+            pooCount += 1
+            if (wType == "poo_black"):
+                totalScore -= 0.03
+
+    s1 = addScore(averagePeePooTime, normalPeePooTime, 1000, 0.1, totalScore)
+    s2 = addScore(peeCount, normalPeeCount, 35, 0.25, s1)
+    totalScore = addScore(pooCount, normalPooCount, 15, 0.25, s2)
+
+    outputConsole("Your health level is " + totalScore + " out of 1.")
+
+    if (totalScore >= 0.8):
+        outputConsole("You are healthy! Please it up!")
+    elif (totalScore >= 0.6):
+        outputConsole("You are slightly unhealthy! Exercise more!")
+    elif (totalScore >= 0.4):
+        outputConsole("You have to start to take care with your health!")
+    elif (totalScore >= 0.2):
+        outputConsole("Your health is bad! You need to take extra care!")
+    else:
+        outputConsole("Your health is in a harmful state! Please seek help from doctor!")
+    
+
+
 def takePic(isWastage, fileType):
     firebase2 = pyrebase.initialize_app(setConfig(1))
     auth2 = firebase2.auth()
@@ -145,14 +181,15 @@ def takePic(isWastage, fileType):
     storage2 = firebase2.storage()
 
     storage2.child(lastPic).download("C:", "lastPic.jpg", user2['idToken'])
-    if (isWastage == 1): #FOR JS: isWastage indicate wether its wastage pic
+    if (isWastage == 1): 
         storage2.child(lastPic).download(
             "C:", "wastage.jpg",
             user2['idToken'])  #For detecting pee or poo type later
 
     picName = fileType + "_" + strftime("%Y%m%d%H%M%S",
                                                        localtime()) + ".jpg"
-    db1.child("main").update({"LatestPic":picName}) #FOR JS: Name of pic uploaded to DB to make retrieving & displaying easier
+    db1.child("main").update({"LatestPic":picName}) 
+
     cwd = str(Path.cwd())
     cwd = '/'.join(cwd.split('\\'))
     storage1.child("main/"+picName).put(cwd + "/lastPic.jpg")
@@ -247,7 +284,7 @@ def findType(s):
 
     print(cropped_wastage_surrounding)
     print(cropped_wastage_middle)
-
+    
     if (r1 - r2) in range(-50, 50) and (g1 - g2) in range(
             -50, 50) and (b1 - b2) in range(-50, 50):  # pee
         if r1 in range(250, 256) and g1 in range(250, 256) and b1 in range(
@@ -424,7 +461,7 @@ def run():
                     break
             outputConsole("User has left...")
 
-            #TODO
+
             #detect poo/urine type based on pi image
             wastageType = findType("wastage.jpg")
             db1.child("main").child(day).child(count).update(
