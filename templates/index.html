@@ -8,7 +8,7 @@
         
         
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        
+
     </head>
 
 <body style="background-image:url('../static/pictures/bckg.png');">
@@ -16,7 +16,7 @@
 
     
     <div>
-        <p style="font-size: 41px;margin-left: 570px;"><a href="/" style="text-decoration: none;cursor:pointer;color:red;">Smart-Toilet System</p></a>
+        <p id="home" style="font-size: 41px;margin-left: 570px;cursor:pointer;color:red;text-decoration: none;">Smart-Toilet System</p>
         <div>
 
     <div class="top" style="float:top;margin-left:480px;">
@@ -26,27 +26,33 @@
     </div>
 
     <div>
-            <div class="left" style="height:600px;width:860px;">
-                <div id="graph" style="height:320px;width:584px;border: 11px solid rgb(216, 69, 69);margin-left:180px;margin-top:-70px;">
-                    <img id="image" src="{{url_for('static', filename='pictures/stoilet2.png')}}" usemap="#image-map">
-                    <div id="chartContainer" style="height: 370px; width:100%;display: none;"></div>
+            <div class="left" style="height:600px;width:588px;margin-left:180px">
+                <div id="graph" style="height:370px;width:500px;margin-top:-70px;margin-left:100px;">
+                    <img style="height:320px;width:584px;border: 11px solid rgb(5, 5, 5);margin-left:-100px;" id="image" src="{{url_for('static', filename='pictures/stoilet2.png')}}" usemap="#image-map">
+                     
+                    <div id="chartContainer" style="display:none;"></div>
+                    
                 </div>
-
-                <div id="picture" style="display:none;height:400px;width:600px;border: 11px solid rgb(216, 69, 69);margin-top:-68px;margin-left:160px;">
-                    <!-- <div style="display: inline;"></div> -->
+                
+                    
+                    <div id="picture" style="display:none;height:400px;width:600px;border: 11px solid rgb(216, 69, 69);margin-top:-68px;margin-left:160px;">
                     <!-- <button id="retrieve" style="margin-top:0px;width:30%;color:white;background-color:rgb(29, 93, 167);">Retreive Photo</button> -->
                     <!-- <button style="width:30%;color:white;background-color:rgb(29, 93, 167);"><a href="Camera.html" style="text-decoration: none;color: white;">Refresh</a></button> -->
                     <!-- </div> -->
-                    
-                    <img id="img" style="height: 320px;width:400px;margin-left: 43px; margin-top:40px;border: 2px solid white;"></img>
-                    
+                    <div style="height:322px;width:403px;border: 11px solid rgb(216, 69, 69);margin-top:-68px;margin-left:160px;">
+                    <img id="img" style="height: 320px;width:400px;margin-left:0px; margin-top:0px;border: 2px solid white;"></img>
+                    </div>
+                    </div>
+
                 </div>
 
-            </div>
+ 
 
-            <div class="right" style="height:450px;width:393px;border: 11px solid rgb(216, 69, 69);margin-top:48px;">
-                <div>
-                    <textarea id="console" readonly style="height:467px;width:400px;margin-left:-11px;margin-top:-20px"></textarea>
+            <div class="right" style="height:422px;width:393px;border: 11px solid rgb(216, 69, 69);margin-top:48px;margin-left:60px;">
+                <div class="right_">
+                    <textarea id="console" readonly style="height:437px;width:400px;margin-left:-11px;margin-top:-20px"></textarea>
+                    <input type="button" style="margin-top:10px;margin-left:356px;" value="Clear" onclick="javascript:eraseText();"> 
+                    
                 </div>
 
             </div>
@@ -57,11 +63,11 @@
 
 
 <map name="image-map">
-    <area id="ult1" alt="Ultrasonic1"  href="#" title="Ultrasonic1" coords="43,133,71,107" shape="rect">
-    <area id="ult2" alt="Ultrasonic2" title="Ultrasonic2" coords="232,231,202,203" shape="rect">
-    <area target="_blank" alt="Camera" title="Camera" href="" coords="227,169,249,147" shape="rect">
-    <area target="_blank" alt="Microphone" title="Microphone" href="" coords="350,31,321,7" shape="rect">
-    <area target="_blank" alt="Light" title="Light" href="Light_Graph.html" coords="172,3,201,22" shape="rect">
+    <area id="ult1" alt="Ultrasonic1"  href="#" title="Ultrasonic1" coords="53,103,93,138" shape="rect">
+    <area id="ult2"  alt="Ultrasonic2" href="#" title="Ultrasonic2" coords="215,212,243,236" shape="rect">
+    <!-- <area target="_blank" alt="Camera" title="Camera" href="" coords="227,169,249,147" shape="rect"> -->   
+    <area id="light" alt="Light" href="#" title="Light" coords="177,7,212,26" shape="rect">
+    <area id="sound" alt="Microphone" href="#" title="Microphone" coords="333,10,366,38" shape="rect">
 </map>
 
 
