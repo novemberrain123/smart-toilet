@@ -82,12 +82,10 @@ firebase.initializeApp(config);
 
 // capture image
 document.getElementById("retrieve").onclick = function () {
-  var test = [];
-  var i = 0;
-  var picName; //FOR GAN: Latest pic name stored in db, can directly display
+  var picName; 
   firebase
     .database()
-    .ref("main/LatestPic") //FOR GAN: .on is an eventlistener meaning it updates constantly without user interaction, therefore we just listen on main/LatestPic value and it will auto rerun image display when main/LatestPic value changes.
+    .ref("main/LatestPic") 
     .on("value", function (valSnapshot) {
       picName = valSnapshot.val();
       firebase
@@ -237,7 +235,6 @@ function graphDisplay(sensor_type)
 
     chart.render();
   };
-//FOR GAN: try to fix size of graph so it fits in border, also include graphs for sound, light 
   updateChart2(dataLength);
   setInterval(function () {
     updateChart2();
@@ -250,5 +247,3 @@ firebase.database().ref("main/console").on("value", function(valSnapshot){
     consoleText = consoleText.concat(valSnapshot.val(),"\n")
     document.getElementById("console").value = consoleText;
 });
-//FOR GAN: add button to clear console txt area, and test event where text length exceeds txtarea in which case implement scrolling
-//FOR GAN: can use same func to generate all graphs, use parameters to differentiate them
