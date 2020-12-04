@@ -210,11 +210,13 @@ def updUltsensor(ultName):
     y, hour, date = getLatestSubfolder()
     for keyValue in y:
         x = str(keyValue.key())
-        ult1 = db2.child("PI_03_" + date).child(hour).child(x).child(
-            "rand1").get().val()  #record every 10 secs
-        ult2 = db2.child("PI_03_" + date).child(hour).child(x).child(
-            "rand2").get().val()  #record every 10 secs
-        ultResults = min(int(float(ult1)), int(float(ult2)))
+        # ult1 = db2.child("PI_03_" + date).child(hour).child(x).child(
+        #     "rand1").get().val()  #record every 10 secs
+        # ult2 = db2.child("PI_03_" + date).child(hour).child(x).child(
+        #     "rand2").get().val()  #record every 10 secs
+        # ultResults = min(int(float(ult1)), int(float(ult2)))
+        ultResults = db2.child("PI_03_" + date).child(hour).child(x).child(
+            "ultra").get().val()
         db1.child("main").child(day).child(count).update(
             {ultName: str(ultResults)})  #write ultrasensor results to db1
         return float(ultResults)
@@ -338,7 +340,7 @@ def run():
             }
             #if user detected turn relay1 and relay2 updUltsensor("ultra1")
             while True:
-                if (1 <= 100):
+                if (updUltsensor("ultra1") <= 100):
                     db2.child("PI_03_CONTROL").update(data)
                     break
                 sleep(9)
@@ -349,14 +351,14 @@ def run():
             #record time user spends on toilet actually pooing/peeing
             #if ultra2 is >20 for more than 15 secs, considered to be done & timer will stop
             check = True
-            while check:  #updUltsensor("ultra2")
-                if (1 <= 10):
+            while check:  
+                if (updUltsensor("ultra2") <= 10):
                     beginTime = perf_counter()
                     while check:
-                        if (22 > 10):
+                        if (updUltsensor("ultra2") > 10):
                             secondTime = perf_counter()
                             while check:
-                                if (22 > 10):
+                                if (updUltsensor("ultra2") > 10):
                                     if ((perf_counter() - secondTime) > 15):
                                         check = False
                                 else:
