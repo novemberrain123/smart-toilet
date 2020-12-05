@@ -4,7 +4,6 @@ $(document).ready(function () {
     $("#image").hide();
     // display the charts
     $("#chartContainer").attr("style", "display:block");
-
   });
 });
 
@@ -14,7 +13,6 @@ $(document).ready(function () {
     $("#image").hide();
     // display the charts
     $("#chartContainer").attr("style", "display:block");
-
   });
 });
 
@@ -24,7 +22,6 @@ $(document).ready(function () {
     $("#image").hide();
     // display the charts
     $("#chartContainer").attr("style", "display:block");
-
   });
 });
 
@@ -34,8 +31,6 @@ $(document).ready(function () {
     $("#image").hide();
     // display the charts
     $("#chartContainer").attr("style", "display:block");
-    
-
   });
 });
 
@@ -46,7 +41,7 @@ $(document).ready(function () {
     $("#chartContainer").hide();
     // display the charts
     $("#picture").attr("style", "display:block");
-    $("#picture").css("margin-top","-370px");
+    $("#picture").css("margin-top", "-370px");
   });
 });
 
@@ -58,9 +53,8 @@ $(document).ready(function () {
     // display the charts
     // $("#graph").attr("style", "display:inline");
     $("#image").attr("style", "display:block");
-    $("#image").attr("border","11","solid");
-    $("#image").css("margin-left","-100px");
-
+    $("#image").attr("border", "11", "solid");
+    $("#image").css("margin-left", "-100px");
   });
 });
 
@@ -82,10 +76,10 @@ firebase.initializeApp(config);
 
 // capture image
 document.getElementById("retrieve").onclick = function () {
-  var picName; 
+  var picName;
   firebase
     .database()
-    .ref("main/LatestPic") 
+    .ref("main/LatestPic")
     .on("value", function (valSnapshot) {
       picName = valSnapshot.val();
       firebase
@@ -114,28 +108,29 @@ document.getElementById("retrieve").onclick = function () {
     });
 };
 
-
 // //Display graphs
-document.getElementById("ult1").onclick = function() 
-{graphDisplay("ultra1")};
+document.getElementById("ult1").onclick = function () {
+  graphDisplay("ultra1");
+};
 
-document.getElementById("ult2").onclick = function() 
-{graphDisplay("ultra2")};
+document.getElementById("ult2").onclick = function () {
+  graphDisplay("ultra2");
+};
 
-document.getElementById("sound").onclick = function() 
-{graphDisplay("sound")};
+document.getElementById("sound").onclick = function () {
+  graphDisplay("sound");
+};
 
-document.getElementById("light").onclick = function() 
-{graphDisplay("light")};
+document.getElementById("light").onclick = function () {
+  graphDisplay("light");
+};
 
-
-function graphDisplay(sensor_type) 
-{
-  var sensorName=sensor_type.toString();
+function graphDisplay(sensor_type) {
+  var sensorName = sensor_type.toString();
   var dps = []; // dataPoints
   var chart = new CanvasJS.Chart("chartContainer", {
     title: {
-      text: sensorName+" sensor value",
+      text: sensorName + " sensor value",
     },
     data: [
       {
@@ -157,21 +152,21 @@ function graphDisplay(sensor_type)
     count = count || 1;
 
     for (var j = 0; j < count; j++) {
-      var sensorName=sensor_type.toString();
+      var sensorName = sensor_type.toString();
       var date = new Date();
-      var year = (date.getFullYear()).toString();
+      var year = date.getFullYear().toString();
       var month = (date.getMonth() + 1).toString();
-      var day = (date.getDate()).toString();
+      var day = date.getDate().toString();
       var days;
       if (parseInt(day) < 10) {
         days = ("0" + day).toString();
       } else {
         days = day.toString();
       }
-      var set=year.concat(month).concat(days);
+      var set = year.concat(month).concat(days);
       var query = firebase
         .database()
-        .ref("main/"+set)
+        .ref("main/" + set)
         .orderByKey();
       query.once("value").then(function (snapshot) {
         for (var x in snapshot.val()) {
@@ -182,42 +177,30 @@ function graphDisplay(sensor_type)
         if (path >= 1000) {
           nextPath = path.toString();
         } else if (path >= 100) {
-          nextPath =path.toString();
+          nextPath = path.toString();
         } else if (path >= 10) {
-          nextPath =path.toString();
+          nextPath = path.toString();
         } else {
           nextPath = "0" + path.toString();
         }
-      
+
         firebase
           .database()
-          .ref("main/"+set+"/"+nextPath)
+          .ref("main/" + set + "/" + nextPath)
           .on("value", function (valSnapshot) {
-
-            if(sensorName=="ultra1")
-            {
+            if (sensorName == "ultra1") {
               yVal = valSnapshot.val().ultra1;
-            }
-            else if(sensorName=="ultra2")
-            {
+            } else if (sensorName == "ultra2") {
               yVal = valSnapshot.val().ultra2;
-            }
-            else if(sensorName=="sound")
-            {
+            } else if (sensorName == "sound") {
               yVal = valSnapshot.val().sound;
-            }
-            else if(sensorName=="light")
-            {
+            } else if (sensorName == "light") {
               yVal = valSnapshot.val().led;
+            } else {
+              yVal = null;
             }
-            else
-            {
-              yVal=null;
-            }
-            
           });
-        });
-      
+      });
 
       var yValue = parseInt(yVal);
 
@@ -239,11 +222,14 @@ function graphDisplay(sensor_type)
   setInterval(function () {
     updateChart2();
   }, updateInterval);
-};
+}
 
-var consoleText = ""
-//For console output 
-firebase.database().ref("main/console").on("value", function(valSnapshot){
-    consoleText = consoleText.concat(valSnapshot.val(),"\n")
+var consoleText = "";
+//For console output
+firebase
+  .database()
+  .ref("main/console")
+  .on("value", function (valSnapshot) {
+    consoleText = consoleText.concat(valSnapshot.val(), "\n");
     document.getElementById("console").value = consoleText;
-});
+  });

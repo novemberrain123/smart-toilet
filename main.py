@@ -90,7 +90,8 @@ def generateReport(day):
         typeList = []
         temp = db1.child("main").child(day).child(x).child("time").get().val()
         timeList.append(temp)
-        temp = db1.child("main").child(day).child(x).child("wastageType").get().val()
+        temp = db1.child("main").child(day).child(x).child(
+            "wastageType").get().val()
         typeList.append(temp)
     normalPeePooTime = 60
     normalPeeCount = 7
@@ -99,7 +100,7 @@ def generateReport(day):
     peeCount = 0
     pooCount = 0
     totalScore = 0
-    
+
     peepoo = {
         "averagePeePooTime": averagePeePooTime,
         "peeCount": peeCount,
@@ -112,15 +113,15 @@ def generateReport(day):
         outputConsole("Drink less water")
     elif (peeCount - normalPeeCount) > -2:
         outputConsole("Drink more water")
-    else: 
+    else:
         outputConsole("You are healthy :)")
-    
+
     # Poo recommendation
     if (pooCount - normalPooCount) > 2:
         outputConsole("Stop eating curry")
     elif (pooCount == 0):
         outputConsole("Eat more vegetables")
-    else: 
+    else:
         outputConsole("You are healthy :)")
 
     # Score per day
@@ -150,8 +151,8 @@ def generateReport(day):
     elif (totalScore >= 0.2):
         outputConsole("Your health is bad! You need to take extra care!")
     else:
-        outputConsole("Your health is in a harmful state! Please seek help from doctor!")
-    
+        outputConsole(
+            "Your health is in a harmful state! Please seek help from doctor!")
 
 
 def takePic(isWastage, fileType):
@@ -181,18 +182,17 @@ def takePic(isWastage, fileType):
     storage2 = firebase2.storage()
 
     storage2.child(lastPic).download("C:", "lastPic.jpg", user2['idToken'])
-    if (isWastage == 1): 
+    if (isWastage == 1):
         storage2.child(lastPic).download(
             "C:", "wastage.jpg",
             user2['idToken'])  #For detecting pee or poo type later
 
-    picName = fileType + "_" + strftime("%Y%m%d%H%M%S",
-                                                       localtime()) + ".jpg"
-    db1.child("main").update({"LatestPic":picName}) 
+    picName = fileType + "_" + strftime("%Y%m%d%H%M%S", localtime()) + ".jpg"
+    db1.child("main").update({"LatestPic": picName})
 
     cwd = str(Path.cwd())
     cwd = '/'.join(cwd.split('\\'))
-    storage1.child("main/"+picName).put(cwd + "/lastPic.jpg")
+    storage1.child("main/" + picName).put(cwd + "/lastPic.jpg")
 
 
 def getLatestSubfolder():
@@ -286,7 +286,7 @@ def findType(s):
 
     print(cropped_wastage_surrounding)
     print(cropped_wastage_middle)
-    
+
     if (r1 - r2) in range(-50, 50) and (g1 - g2) in range(
             -50, 50) and (b1 - b2) in range(-50, 50):  # pee
         if r1 in range(250, 256) and g1 in range(250, 256) and b1 in range(
@@ -312,8 +312,6 @@ def outputConsole(s):
 @app.route('/')
 def index():
     return render_template('index.html')
-
-
 
 
 def run():
@@ -351,7 +349,7 @@ def run():
             #record time user spends on toilet actually pooing/peeing
             #if ultra2 is >20 for more than 15 secs, considered to be done & timer will stop
             check = True
-            while check:  
+            while check:
                 if (updUltsensor("ultra2") <= 10):
                     beginTime = perf_counter()
                     while check:
@@ -463,12 +461,12 @@ def run():
                     break
             outputConsole("User has left...")
 
-
             #detect poo/urine type based on pi image
             wastageType = findType("wastage.jpg")
             db1.child("main").child(day).child(count).update(
                 {"wastageType": wastageType})
-            outputConsole("Wastage type & color detected: {}...".format(wastageType))
+            outputConsole(
+                "Wastage type & color detected: {}...".format(wastageType))
 
             #give recommendations to user based on that
             if (day != strftime("%Y%m%d", localtime()) or stop_run):
@@ -477,6 +475,7 @@ def run():
             #integrate python with javascript & deploy
             #data stored:
             #ultra1, ultra2, sound, light, time, wastagetype
+            outputConsole("")
             global c
             c += 1
             count = str(f'{c:02}')
